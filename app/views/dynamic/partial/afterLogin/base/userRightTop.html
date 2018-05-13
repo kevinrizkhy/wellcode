@@ -1,0 +1,35 @@
+{{define "userRightTop"}}
+<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+	{{if .Profil_picture}}
+        <img id="profPic" class="img-circle" alt="{{.Name}}" src="{{.BaseURL}}assets/profile_picture/thumbnail_{{.Profil_picture}}" style="height: 20px !important;width: 20px !important;text-align: center;">
+        {{else}}
+        <img id="profPic" class="img-circle" alt="{{.Name}}" src="{{.BaseURL}}assets/profile_picture/default.jpg" style="height: 20px !important;width: 20px !important;text-align: center;">
+        {{end}}
+	<span class="hidden-xs">{{.Name}}</span>
+</a>
+<ul class="dropdown-menu">
+	<!-- User image -->
+	<li class="user-header">
+		{{if .Profil_picture}}
+        <img id="profPic" class="img-circle" alt="{{.Name}}" src="{{.BaseURL}}assets/profile_picture/thumbnail_{{.Profil_picture}}">
+        {{else}}
+        <img id="profPic" class="img-circle" alt="{{.Name}}" src="{{.BaseURL}}assets/profile_picture/default.jpg">
+        {{end}}
+		<p>
+			{{.Name}} - {{.Role}}
+			<!-- <small>Member since Nov. 2012</small> -->
+		</p>
+	</li>
+	<!-- Menu Body -->
+	<li class="user-footer">
+		<div class="pull-left">
+			<a href="/myprofile" class="btn btn-default btn-flat"><i class="fa fa-user"></i> Profil</a>
+		</div>
+	<form  id="form-work" class="" name="form-work" action="/signout"  method="POST">
+		<div class="pull-right">
+            <button class="btn btn-primary btn-flat"><i class="fa fa-power-off"></i> Keluar</button>
+		</div>
+	</form>
+	</li>
+</ul>
+{{end}}

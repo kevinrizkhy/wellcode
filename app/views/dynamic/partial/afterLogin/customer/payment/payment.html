@@ -1,0 +1,741 @@
+{{define "content"}}
+
+<script>
+    
+    function isInt(value) {
+        return !isNaN(value) && 
+            parseInt(Number(value)) == value && 
+            !isNaN(parseInt(value, 10));
+    }
+          
+    function changeURL(urlPath){
+        window.history.pushState({"html":"","pageTitle":""},"", urlPath);
+    }
+    
+    window.addEventListener("popstate", function() {
+        var url_parts = window.location.href.split("/");
+        if (url_parts[url_parts.length-1] == 'new') {
+            newVoucher();
+        }
+        else if (isInt(url_parts[url_parts.length-1])) {
+            openVoucher(url_parts[url_parts.length-1]);
+        }
+        else{
+            openList();
+        }
+    }, false);
+      
+    var count = 1;
+    
+    function addFileForm(){
+        var table = document.getElementById("tablefile")
+        var row = table.insertRow(-1)
+        var cell1 = row.insertCell(0)
+        var cell2 = row.insertCell(1)
+        cell2.class = "delete-row"
+        
+        count++;
+        var name = "order_file_"+count;
+        
+        cell1.innerHTML= "<input name='"+name+"' required class='form-control' placeholder='Spesifikasi' type='file'/>"
+        cell2.innerHTML="<i class='fa fa-times' aria-hidden='true' style='color: #E5211D;text-align:center' onclick='deleteRow()'></i>"
+        
+        return false
+    }
+    
+    function deleteRow(){
+        count = count - 1;
+        document.getElementById("tablefile").deleteRow(-1);
+    }
+    
+    
+    function setClickable() {
+        $(".clickable").click(function() {
+            var id = $(this).attr('id');
+            changeURL("/order/"+id);
+            openVoucher(id);
+        });
+    }
+    
+    var role = {{.Role}};
+    
+    function postVoucher() {
+        var formData = new FormData($('#form-order')[0]);
+        formData.append("count",count);
+        $.ajax({
+            url: '{{.BaseURL}}api/order', 
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType:false
+        })
+        .done(function(result){
+            data = $.parseJSON(result);
+            openVoucher(data["id"]);
+            $('html,body').scrollTop(0);
+            torch("Anda telah berhasil melakukan pesanan.","ok");
+        }).fail(function(result){
+            data = $.parseJSON(result.responseText);
+            console.log(data);
+            if ("error" in data && data["error"]) {
+                torch(data["description"],"error");
+            }
+        });
+    }
+    
+    function orderReject() {
+        if (confirm('Apakah Anda yakin untuk menolak pesanan ini?')) {
+            $.ajax({ 
+                type: 'GET', 
+                url: '{{.BaseURL}}cancelorder/'+order_id, 
+                data: {},
+                dataType: 'json',
+                success: function (data) {
+                    openVoucher(order_id);
+                    $('html,body').scrollTop(0);
+                },
+                error: function (data) {
+                    torch("Pesanan gagal ditolak. Harap hubungi pihak admin di it@sinarintipanel.com","error");
+                },
+            });
+        }
+    }
+    
+    function resetOffer() {
+        var offer_file_count = 1;
+        $('#offer_description').empty();
+        $('#offer_description').val("");
+        $('#offer_description').html("");
+        $('#subtotal').val('');
+        $('#discount').val('');
+        $('#dpp').val('');
+        $('#tax').val('');
+        $('#grandtotal').val('');
+        $('#tablefile-offer').empty();
+        $("#tablefile-offer").html("<tr><td><input name='offer_file_1' required class='form-control' placeholder='Spesifikasi' type='file' /></td><td><i class='fa fa-times' aria-hidden='true' style='color: #E5211D;visibility: hidden;'></i></td></tr>");
+        $("h3#offer-title").html("Beri Komentar");
+        $('input:checkbox#offer').prop('checked', false);
+        $("#subtotal, #discount, #dpp, #tax, #grandtotal, label[for='subtotal'], label[for='discount'], label[for='dpp'], label[for='tax'], label[for='grandtotal']").hide();
+    }
+    
+    function onClickVoucher() {
+        $("#button-order-reject").click(function() {
+            orderReject();
+        });
+    }
+    
+    function postOffer() {
+        var formData = new FormData($('#form-offer')[0]);
+        formData.append("countoffersales",offer_file_count);
+        formData.append("history_id",order_id);
+        $.ajax({
+            url: '{{.BaseURL}}offer', 
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType:false
+        })
+        .done(function(result){
+            resetOffer();
+            openVoucher(order_id);
+            torch("Anda telah berhasil mengirimkan komentar Anda.","ok");
+        }).fail(function(result){
+            data = $.parseJSON(result.responseText);
+            console.log(data);
+            if ("error" in data && data["error"]) {
+                torch(data["description"],"error");
+            }
+        });
+    }
+    
+    function offerApprove(id) {
+        if (confirm('Apakah Anda yakin untuk mengkonfirmasi tawaran ini?')) {
+            $.ajax({ 
+                type: 'GET', 
+                url: '{{.BaseURL}}confirmorder/'+id, 
+                data: {},
+                dataType: 'json',
+                success: function (data) {
+                    openVoucher(order_id);
+                    $('html,body').scrollTop(0);
+                },
+                error: function (data) {
+                    torch("Konfirmasi pesanan gagal. Harap hubungi pihak admin di it@sinarintipanel.com","error");
+                },
+            });
+        }
+    }
+    
+    function offerReject(id) {
+        $.ajax({ 
+            type: 'GET', 
+            url: '{{.BaseURL}}confirmorder/'+order_id, 
+            data: {},
+            dataType: 'json',
+            success: function (data) {
+                openVoucher(order_id);
+            },
+            error: function (data) {
+                torch("Pembatalan pesanan gagal. Harap hubungi pihak admin di it@sinarintipanel.com","error");
+            },
+        });
+    }
+    
+    function onClickOffer() {
+        $("#button-offer-approve").click(function() {
+            var id = $(this).attr('offer-id');
+            offerApprove(id);
+        });
+        //$("#button-offer-reject").click(function() {
+        //    var id = $(this).attr('offer-id');
+        //    offerReject(id);
+        //});
+    }
+    
+    Number.prototype.formatMoney = function(c, d, t){
+        var n = this, 
+        c = isNaN(c = Math.abs(c)) ? 2 : c, 
+        d = d == undefined ? "." : d, 
+        t = t == undefined ? "," : t, 
+        s = n < 0 ? "-" : "", 
+        i = String(parseInt(n = Math.abs(Number(n) || 0).toFixed(c))), 
+        j = (j = i.length) > 3 ? j % 3 : 0;
+        return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+    };
+    
+    function openVoucher(id) {
+        resetOffer();
+        $('#order-number-container').show();
+        $('#order-date-container').show();
+        $('#order-tree').removeClass("active");
+        $('#order-form').addClass("active");
+        $('#form-order').hide();
+        $('#view-order').show();
+        $('#comments').show();
+        $('#payments').show();
+        $('#comments .timeline li:not(:first):not(:last)').remove();
+        $('#payments .timeline li:not(:first)').remove();
+        $.ajax({ 
+            type: 'GET', 
+            url: '{{.BaseURL}}api/order/'+id, 
+            data: {}, 
+            dataType: 'json',
+            success: function (data) {
+                $('#order-number').text(data["order"][0]["order_numer"]);
+                $('#order-date').text(data["order"][0]["date_order"]);
+                $('#project_name_view').html(data["order"][0]["project_name"]);
+                $('#project_location_view').html(data["order"][0]["location"]);
+                $('#status').empty();
+                if (data["order"][0]["offer_status"] == "unconfirm") {
+                    $("#status").append("<span class='label label-warning'>Negosiasi Berlangsung</span>");
+                    $("#new-offer").show();
+                }
+                else{
+                    $("#status").append("<span class='label label-success'>Penawaran Selesai</span>");
+                    $("#new-offer").hide();
+                }
+                
+                if (data["order"][0]["payment_status"] == "unpaid") {
+                    $("#status").append("<span class='label label-warning'>Belum Lunas</span>");
+                }
+                else{
+                    $("#status").append("<span class='label label-success'>Lunas</span>");
+                }
+                
+                if (data["order"][0]["offer_status"] == "unconfirm" && data["order"][0]["payment_status"] == "unpaid") {
+                    $('#order-form-cancel-button').text("Tolak Pesanan");
+                }
+                else{
+                    $('#order-form-cancel-button').text("Batalkan Pesanan");
+                }
+                
+                for(var i = 0; i < data["offer"].length; i++) {
+                    var offer = data["offer"][i];
+                    
+                    var background = "bg-blue";
+                    var headerclass = "";
+                    var message = "";
+                    
+                    if (offer["offer"] == "Penawaran") {
+                        background = "bg-orange";
+                        headerclass = "orange-header";
+                        message = "Memberikan Penawaran."
+                    }
+                    
+                    var offer_element = [
+                        '<li>',
+                            '<i class="fa fa-comments '+background+'"></i>',
+                            '<div class="timeline-item">',
+                                '<span class="time"><i class="fa fa-clock-o"></i>'+offer["date_offer"]+'</span>',
+                    
+                                '<h3 class="timeline-header '+headerclass+'"><a>'+offer["user_name"]+'</a></h3>',
+                    
+                                '<div class="timeline-body">',
+                                    offer["description"],
+                                    '<br>'
+                    ].join('');
+                    
+                    if (offer["offer"] == "Penawaran") {
+                        var offer_element = offer_element + [
+                            '<div class="price-tag">',
+                            '<span class="total-title">Subtotal</span>:<span class="total-value">Rp. '+(parseFloat(offer["subtotal"]).formatMoney(2, ',', '.'))+'</span><br>',
+                            '<span class="total-title">Diskon</span>:<span class="total-value">Rp. '+(parseFloat(offer["discount"]).formatMoney(2, ',', '.'))+'</span><br>',
+                            '<span class="total-title">DPP</span>:<span class="total-value">Rp. '+(parseFloat(offer["dpp"]).formatMoney(2, ',', '.'))+'</span><br>',
+                            '<span class="total-title">PPN</span>:<span class="total-value">Rp. '+(parseFloat(offer["ppn"]).formatMoney(2, ',', '.'))+'</span><br>',
+                            '<span class="total-title">Grand Total</span>:<span class="total-value">Rp. '+(parseFloat(offer["grand_total"]).formatMoney(2, ',', '.'))+'</span><br>',
+                            '</div>'
+                        ].join('');
+                    }
+                    
+                    var files = offer["file_name"].split("|");
+                    for(var j = 0; j < files.length; j++) {
+                        offer_element = offer_element + ('<a class="download" href="'+(files[j])+'" target="blank"><i class="fa fa-download" aria-hidden="true"></i>Unduh</a>');
+                    }
+                    
+                    offer_element = offer_element + "</div>"
+                    
+                    {{if eq .Role "Distributor"}}
+                        if (offer["offer"] == "Penawaran" && data["order"][0]["offer_status"] == "unconfirm") {
+                            offer_element = offer_element + [
+                                '<div class="timeline-footer">',
+                                    '<div class="buttons">',
+                                        '<a href="javascript:void(0)" offer-id="'+offer["id"]+'" id="button-offer-approve" class="button button-ok">Setuju</a>',
+                                    '</div>',
+                                '</div>'
+                            ].join('');
+                        }
+                    {{end}}
+                    
+                    offer_element = offer_element + '</div></li>';
+                    
+                    $('#new-offer').before(offer_element);
+                }
+                
+                for(var i = 0; i < data["invoice"].length; i++) {
+                    
+                    var invoice = data["invoice"][i];
+                    var balance = invoice['balance'];
+                    var date_created = invoice['date_created'];
+                    var description = invoice['description'];
+                    var file_name = invoice['file_name'];
+                    var invoice_number = invoice['invoice_number'];
+                    var total = invoice['total'];
+                    
+                    var file = '';
+                    if (file_name != '') {
+                        file = '<a class="download" href="'+file+'" target="blank"><i class="fa fa-download" aria-hidden="true"></i>Unduh Tagihan</a>';
+                    }
+                    
+                    var invoice_element = [
+                        '<li>',
+                            '<i class="fa fa-credit-card bg-red"></i>',
+                            '<div class="timeline-item">',
+                                '<span class="time"><i class="fa fa-clock-o"></i>'+date_created+'</span>',                                
+                                '<h3 class="timeline-header"><a>Tagihan '+invoice_number+'</a></h3>',                                
+                                '<div class="timeline-body">',
+                                    description+'<br>',
+                                    '<span class="total-title">Jumlah</span>:<span class="total-value">Rp. '+(parseFloat(pay).formatMoney(2, ',', '.'))+'</span><br>',
+                                    file,
+                                '</div>',
+                            '</div>',
+                        '</li>'
+                    ].join('');
+                    
+                    $('#payments .timeline').append(invoice_element);
+                }
+                
+                for(var i = 0; i < data["payment"].length; i++) {
+                    var payment = data["payment"][i];
+                    var create_date = payment['date_created'];
+                    var date_payment = payment['date_payment'];
+                    var distributor = payment['distributor'];
+                    var pay = payment['pay'];
+                    var receipt_file = payment['receipt_file'];
+                    var validation = payment['validation'];
+                    
+                    var receipt = '';
+                    if (receipt_file != '#') {
+                        receipt = '<a class="download" href="'+receipt_file+'" target="blank"><i class="fa fa-download" aria-hidden="true"></i>Unduh Kwitansi</a>';
+                    }
+                    
+                    var payment_element = [
+                        '<li>',
+                            '<i class="fa fa-money bg-green"></i>',
+                            '<div class="timeline-item">',
+                                '<span class="time"><i class="fa fa-clock-o"></i>'+date_payment+'</span>',                                
+                                '<h3 class="timeline-header"><a>Pembayaran Diterima</a></h3>',                                
+                                '<div class="timeline-body">',
+                                    '<span class="total-title">Jumlah</span>:<span class="total-value">Rp. '+(parseFloat(pay).formatMoney(2, ',', '.'))+'</span><br>',
+                                    receipt,
+                                '</div>',
+                            '</div>',
+                        '</li>'
+                    ].join('');
+                    
+                    $('#payments .timeline').append(payment_element);
+                }
+                
+                onClickOffer();
+                onClickVoucher();
+            },
+            error: function (data) {
+                torch("Pesanan gagal dimuat. Harap hubungi pihak admin di it@sinarintipanel.com","error");
+            },
+        });
+        
+        changeURL("/order/"+id);
+        order_id = id;
+    }
+    
+    function openList() {
+        $('#order-form').removeClass("active");
+        $('#order-tree').addClass("active");
+        $('#order-table').empty();
+        $.ajax({ 
+            type: 'GET', 
+            url: '{{.BaseURL}}api/orderlist', 
+            data: {},
+            dataType: 'json',
+            success: function (data) {
+                for(var i = 0; i < data["list"].length; i++) {
+                    var order = data["list"][i];
+                    var order_tr = '<tr class="clickable" id="'+order["id"]+'">';
+                    
+                    order_tr += '<td>'
+                    
+                    if (order["offer_status"] == "unconfirm") {
+                        order_tr = order_tr + '<span class="label label-warning">Negosiasi</span>';
+                    }
+                    else{
+                        order_tr = order_tr + '<span class="label label-success">Penawaran Selesai</span>';
+                    }
+                    
+                    if (order["payment_status"] == "unpaid") {
+                        order_tr = order_tr + '<span class="label label-warning">Belum Lunas</span>';
+                    }
+                    else{
+                        order_tr = order_tr + '<span class="label label-success">Lunas</span>';
+                    }
+                    
+                    order_tr = order_tr+'</td>'
+                    
+                    order_tr += [
+                            '<td>'+order["number"]+'</td>',
+                            '<td>'+order["project_name"]+'</td>',
+                            '<td>'+order["location"]+'</td>',
+                            '<td>'+order["date_created"]+'</td>',
+                            {{if eq .Role "Sales"}}
+                                '<td>'+order["company_name"]+'</td>',
+                            {{end}}
+                            '<td>'+(parseFloat(order["grand_total"]).formatMoney(2, ',', '.'))+'</td>'                            
+                    ].join('');
+                    
+                    order_tr = order_tr+'</tr>'
+                    
+                    $('#order-table').append(order_tr);
+                }
+                setClickable();
+            },
+            error: function (data) {
+                torch("Daftar pesanan gagal dimuat. Harap hubungi pihak admin di it@sinarintipanel.com","error");
+            },
+        });
+        changeURL("/order");
+    }
+    
+    function newOffer() {
+        offer_file_count = 1        
+    }
+    
+    var order_id = {{.order_id}};
+    
+    $(document).ready(function(){
+        if (order_id == "new") {
+            newVoucher();
+        }
+        else if (order_id != "") {
+            changeURL("/order/"+order_id);
+            openVoucher(order_id);
+            setTimeout(function(){
+                window.scrollTo(0,document.body.scrollHeight);
+            }, 1000);
+        }
+        else{
+            openList();
+        }
+        
+        window.onpopstate = function(e){
+            if(e.state){
+                document.title = e.state.pageTitle;
+            }
+        };
+        
+        $("#button-new-order-cancel").click(function() {
+            openList();
+        });
+        
+        $("#back-tree").click(function() {
+            openList();
+        });
+        
+        $("#button-new-order-send").click(function() {
+            var submission = function() {
+                var r = $.Deferred();
+                $('#button-new-order-send').css('pointer-events','none');
+                postVoucher();
+                return r;
+            };
+            
+            var afterSubmission = function() {
+                $('#button-new-order-send').css('pointer-events','auto');
+            };
+            
+            submission().done(afterSubmission());
+        });
+        
+        $("#button-offer-send").click(function() {
+            var submission = function() {
+                var r = $.Deferred();
+                $('#button-offer-send').css('pointer-events','none');
+                postOffer();
+                return r;
+            };
+            
+            var afterSubmission = function() {
+                $('#button-offer-send').css('pointer-events','auto');
+            };
+            
+            submission().done(afterSubmission());
+        });
+        
+        $("#button-offer-cancel").click(function() {
+            resetOffer();
+        });
+        
+        $("#button-order-new").click(function() {
+            newVoucher();
+        });
+        
+        $("#subtotal, #discount, #dpp, #tax, #grandtotal, label[for='subtotal'], label[for='discount'], label[for='dpp'], label[for='tax'], label[for='grandtotal']").hide();
+        
+        $('input:checkbox#offer').change(
+            function(){
+                if ($(this).is(':checked')) {
+                    $("#subtotal, #discount, #dpp, #tax, #grandtotal, label[for='subtotal'], label[for='discount'], label[for='dpp'], label[for='tax'], label[for='grandtotal']").show();
+                    $("h3#offer-title").html("Beri Penawaran");
+                }
+                else{
+                    $("#subtotal, #discount, #dpp, #tax, #grandtotal, label[for='subtotal'], label[for='discount'], label[for='dpp'], label[for='tax'], label[for='grandtotal']").hide();
+                    $("h3#offer-title").html("Beri Komentar");
+                }
+            }
+        );
+        
+        $( "#subtotal, #discount" ).change(function() {
+            var subtotal = parseInt($('#subtotal').val());
+            
+            if(!subtotal || isNaN(subtotal)){
+                subtotal = 0.0;
+                $('#subtotal').val(0);
+            }
+            
+            var discount = parseInt($('#discount').val());
+            
+            if(!discount || isNaN(discount)){
+                discount = 0.0;
+                $('#discount').val(0);
+            }
+            else if (discount > subtotal) {
+                discount = subtotal;
+                $('#discount').val(subtotal);
+            }
+            
+            var dpp = subtotal - discount;
+            var tax = Math.round(dpp * 0.1);
+            var grandtotal = dpp + tax;
+            
+            $('#dpp').val(dpp);
+            $('#tax').val(tax);
+            $('#grandtotal').val(grandtotal);
+        });
+        
+        // View adjustment according to the roles
+        
+    });
+</script>
+
+<link rel="stylesheet" href="{{.BaseURL}}assets/css/main_v2.css">
+
+<section class="content-header">
+    <ol class="breadcrumb">
+        <li><a href="javascript:void(0)" id="back-tree"><i class="fa fa-list"></i>Tabel</a></li>
+        <li class="active">Pesanan</li>
+    </ol>
+</section>
+
+<div id="order-tree" class="switch">
+    <div class="box box-primary">
+        <div class="box-header">
+            <h3 class="box-title"><i class="fa fa-book"></i>Pesanan</h3>
+            <div class="box-tools">
+                {{if eq .Role "Distributor"}}
+                    <a href="javascript:void(0)" id="button-order-new" class='button button-ok'><i class="fa fa-plus"></i>Pesanan Baru</a>
+                {{end}}
+            </div>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body table-responsive no-padding">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Status</th>
+                        <th>Nomor</th>
+                        <th>Proyek</th>
+                        <th>Lokasi</th>
+                        <th>Tanggal</th>
+                        {{if eq .Role "Sales"}}
+                            <th>Distributor</th>
+                        {{end}}
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody id="order-table">
+                </tbody>
+            </table>
+        </div>
+        <!-- /.box-body -->
+    </div>
+</div>
+
+<div id="order-form" class="switch">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="col-md-12" style="padding: 0px;">
+                <div class="order-box">
+                    <div class='fancy-header'>
+                      <i class='fa fa-envelope-o' aria-hidden='true'></i><br>
+                      PESANAN BARU<br>
+                      <div id="order-number-container"><span id="order-number"></span><br></div>
+                      <div id="order-date-container"><span id="order-date"></span><br></div>
+                      <span id="status"></span>
+                    </div>
+                    
+                    <form id="form-order" class='form-group row'>
+                      <div id="order-input" class='col-md-12'>
+                        <label for='project_name'>Nama Proyek</label>
+                        <input type='text' class='form-control' id='project_name' name='project_name' required>
+                        <label for='project_location'>Lokasi Proyek</label>
+                        <input type='text' class='form-control' id='project_location' name='project_location' required>
+                        <label for='description'>Deskripsi Proyek</label>
+                        <textarea class='form-control' id='description' name='description' rows='3' required></textarea>
+                        <input name="count" id="count" type="text" style="border: 0 !important; display: none;" required value="1" />
+                        <label for='order_file'>Lampiran</label><br>
+                        <table id="tablefile" style='width:100%;'>
+                        
+                        </table>
+                        <div class="add-file"><a href="#" onclick="return addFileForm()"><i class="fa fa-plus"></i>Tambah Lampiran</a></div>
+                        <!--multipart file herel-->
+                        <div class='buttons'>
+                            <a href="javascript:void(0)" id="button-new-order-send" class='button button-ok'>Kirim</a><a href="javascript:void(0)" id="button-new-order-cancel" class='button button-cancel'>Batal</a>
+                        </div>
+                      </div>
+                    </form>
+                    
+                    <div id="view-order" class='form-group row'>
+                      <div id="order-input" class='col-md-12'>
+                        <label for='project_name'>Nama Proyek</label>
+                        <p id="project_name_view">Name</p>
+                        <label for='project_location'>Lokasi Proyek</label>
+                        <p id="project_location_view">Location</p>
+                        {{if eq .Role "Sales"}}
+                            <div class='buttons'>
+                                <a href="javascript:void(0)" id="button-order-reject" class='button button-subtle'><i class="fa fa-ban"></i><span id="order-form-cancel-button">Tolak</span></a>
+                            </div>
+                        {{end}}
+                        </div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="comments" class="col-md-6">
+                <div class="title-container">
+                    <span class="timeline-title">Negosiasi Penawaran</span>
+                </div>
+                <ul class="timeline">        
+                    <!-- timeline time label -->
+                    <li class="time-label">
+                        <span id="negotiation-status" class="bg-blue">
+                            Negosiasi
+                        </span>
+                    </li>
+                    <!-- /.timeline-label -->
+                    
+                    <li id="new-offer" class="add-form">
+                        <!-- timeline icon -->
+                        <i class="fa fa-plus bg-aqua"></i>
+                        <div class="timeline-item">
+                            <h3 id="offer-title" class="timeline-header">Beri Komentar</h3>
+                            
+                            <div class="timeline-body">
+                                <form id="form-offer" class='form-group row'>
+                                    <div id="order-input" class='col-md-12'>
+                                        {{if eq .Role "Sales"}}
+                                        <label><input type="checkbox" id="offer" name="offer" value="true"> Penawaran</label><br>
+                                        {{end}}
+                                        <label for='offer_description'>Deskripsi</label>
+                                        <textarea class='form-control' id='offer_description' name='offer_description' rows='3' required>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</textarea>
+                                        
+                                        {{if eq .Role "Sales"}}                                        
+                                        <label for='subtotal'>Subtotal</label>
+                                        <input type='text' onkeypress='return event.charCode >= 48 && event.charCode <= 57' class='form-control' id='subtotal' name='subtotal' required value="1000000"/>
+                                        <label for='discount'>Diskon</label>
+                                        <input type='text' onkeypress='return event.charCode >= 48 && event.charCode <= 57' class='form-control' id='discount' name='discount' required value="100000"/>
+                                        <label for='dpp'>DPP</label>
+                                        <input type='text' class='form-control' id='dpp' name='dpp' required readonly value="900000"/>
+                                        <label for='tax'>PPN</label>
+                                        <input type='text' class='form-control' id='tax' name='tax' required readonly value="90000"/>
+                                        <label for='grandtotal'>Grand Total</label>
+                                        <input type='text' class='form-control' id='grandtotal' name='grandtotal' readonly required value="990000"/>
+                                        {{end}}
+                                        
+                                        <label for='order_file'>Lampiran</label><br>
+                                        <table id="tablefile-offer" style='width:100%;'>
+                                            <tr><td><input name='offer_file_1' required class='form-control' placeholder='Spesifikasi' type='file' /></td><td><i class='fa fa-times' aria-hidden='true' style='color: #E5211D;visibility: hidden;'></i></td></tr>
+                                        </table>
+                                        <div class="add-file"><a href="javascript:void(0)" onclick="return addFileFormOffer()"><i class="fa fa-plus"></i>Tambah Lampiran</a></div>
+                                    </div>
+                                </form>
+                            </div>
+                            
+                            <div class="timeline-footer">
+                                <div class='buttons'>
+                                    <a href="javascript:void(0)" offer-id="1" id="button-offer-send" class='button button-ok'>Kirim</a>
+                                    <a href="javascript:void(0)" offer-id="1" id="button-offer-cancel" class='button button-cancel'>Batal</a>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            
+            <div id="payments" class="col-md-6">
+                <div class="title-container">
+                    <span class="timeline-title">Tagihan &amp; Pembayaran</span>
+                </div>
+                <ul class="timeline">        
+                    <!-- timeline time label -->
+                    <li class="time-label">                        
+                        <span id="negotiation-status" class="bg-blue">
+                            Tagihan &amp; Pembayaran
+                        </span>
+                    </li>
+                    <!-- /.timeline-label -->
+                </ul>
+            </div>
+            
+            <form id="dummy"></form>
+        </div>
+    </div>
+</div>
+{{end}}

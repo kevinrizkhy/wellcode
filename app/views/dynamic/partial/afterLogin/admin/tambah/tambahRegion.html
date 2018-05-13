@@ -1,0 +1,65 @@
+{{define "content"}}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Tambah Region</title>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Select2 -->
+    <link rel="stylesheet" href="{{.BaseURL}}assets/css/bower_components/select2/dist/css/select2.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{{.BaseURL}}assets/css/AdminLTE.min.css">
+    <link rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+    </head>
+    <body >
+      <div class="wrapper">
+        <!-- Main content -->
+        <section class="content">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Provinsi</label>
+              <select class="form-control select2" data-placeholder="Select a State"
+                style="width: 100%;">
+                {{ range $i := .Provinsi }}
+                <option value="{{index $i 0}}" {{index $i 2}}>{{index $i 1}}</option>
+                {{ end }}
+              </select>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Kota / Kabupaten</label>
+              <select class="form-control select2" multiple="multiple" data-placeholder="Select a State"
+                style="width: 100%;">
+                {{ range $i := .Kota }}
+                <option value="{{index $i 0}}" {{index $i 2}}>{{index $i 1}}</option>
+                {{ end }}
+              </select>
+            </div>
+            <!-- /.form-group -->
+          </div>
+          <!-- /.col -->
+        </section>
+        <!-- /.content -->
+      </div>
+    </div>
+    <!-- ./wrapper -->
+    
+    <!-- jQuery 3 -->
+    <script src="{{.BaseURL}}/assets/css/bower_components/jquery/dist/jquery.min.js"></script>
+    <!-- Select2 -->
+    <script src="{{.BaseURL}}/assets/css/bower_components/select2/dist/js/select2.full.min.js"></script>
+    <script>
+    $(function () {
+    //Initialize Select2 Elements
+    $('.select2').select2()
+    })
+    </script>
+  </body>
+</html>
+{{end}}

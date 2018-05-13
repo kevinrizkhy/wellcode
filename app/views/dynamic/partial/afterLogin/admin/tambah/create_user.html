@@ -1,0 +1,266 @@
+{{define "content"}}
+<!DOCTYPE html>
+<html moznomarginboxes mozdisallowselectionprint >
+<head>
+  <meta charset="UTF-8">
+  <title>Buat Pengguna</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+  <link rel="stylesheet" href="{{.BaseURL}}assets/css/style-login.css">
+  <link rel='stylesheet prefetch' href='https://fonts.googleapis.com/icon?family=Material+Icons'>
+  <style type="text/css" media="print">
+  @page {
+    size: auto;   /* auto is the initial value */
+    margin: 0;  /* this affects the margin in the printer settings */
+  }
+</style>
+<style type="text/css" >
+.edit:hover {
+  color: #0a79df;
+}
+.delete:hover {
+  color: #dc2a2a;
+}
+#listTab {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+  table-layout: fixed;
+  word-wrap: break-word;
+}
+#listTab td, #listTab th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+#listTab tr:nth-child(even){background-color: #f2f2f2;}
+#listTab tr:hover {background-color: #aacbff;}
+#listTab th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  color: white;
+}
+#listTab2 {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+  table-layout: fixed;
+  word-wrap: break-word;
+}
+#listTab2 td, #listTab2 th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+#listTab2 tr:nth-child(even){background-color: #f2f2f2;}
+#listTab2 tr:hover {background-color: #aacbff;}
+#listTab2 th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  color: white;
+}
+#tanggal{
+  visibility: hidden;
+}
+div.sticky {
+  position: -webkit-sticky; /* Safari */
+  position: sticky;
+  top: 0;
+}
+.overlay {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.7);
+  transition: opacity 500ms;
+  visibility: hidden;
+  opacity: 0;
+}
+.overlay:target {
+  visibility: visible;
+  opacity: 1;
+}
+.popup {
+  margin: 100px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 5px;
+  width: 70%;
+  position: relative;
+  transition: all 5s ease-in-out;
+}
+.popup h2 {
+  margin-top: 0;
+  color: #333;
+  font-family: Tahoma, Arial, sans-serif;
+}
+.popup .close {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  transition: all 200ms;
+  font-size: 30px;
+  font-weight: bold;
+  text-decoration: none;
+  color: #333;
+}
+.popup .close:hover {
+  color: #06D85F;
+}
+.popup .content {
+  max-height: 30%;
+  overflow: auto;
+}
+@media screen and (max-width: 700px){
+  .popup{
+    width: 70%;
+  }
+}
+@media print {
+  .btn,#days,#day1,#day2,.label-filter{
+    visibility: hidden;
+    display:none
+  }
+  .box.box-primary{
+    border-top-color:white;
+  }
+  #tanggal{
+    visibility: visible;
+  }
+}
+</style>
+</head>
+<body>
+  <div id="wrapper" class="container" style="padding-top: 0;">
+    <div style="margin: 0 auto;">
+      <div class="col-md-12"  style="padding: 25px 0 0 0;">
+        <b><h3 class="profile-username text-center" style="font-size: 25px">Buat Pengguna</h3></b>
+      </div>
+      <div class="col-md-offset-2 col-md-8 col-md-offset-2"  style="padding: 25px 0 0 0;">
+        <form  id="form-work" class="" name="form-work" action="/createuserdata" method="POST">
+          <div id="content-form">
+            <table width=100%>
+              <tr>
+                <td colspan=2>
+                  <div class="form-group">
+                    <div class="col-md-12" >
+                      <label class="control-label" for="email"><span style="color: red;">*</span>Email</label>
+                      <input name="email" class="form-control" placeholder="youremail@provider.domain" type="email" required value="{{.email}}">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="form-group">
+                    <div class="col-md-12">
+                      <label class="control-label" for="first_name"><span style="color: red;">*</span>Nama Depan</label>
+                      <input name="first_name" class="form-control" placeholder="Nama Depan" type="text" required value="{{.first_name}}">
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="form-group">
+                    <div class="col-md-12">
+                      <label class="control-label" for="last_name"><span style="color: red;">*</span>Nama Belakang</label>
+                      <input name="last_name" class="form-control" placeholder="Nama Belakang" type="text" required value="{{.last_name}}">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="form-group">
+                    <div class="col-md-12">
+                      <label class="control-label" for="password"><span style="color: red;">*</span>Kata Sandi&nbsp&nbsp&nbsp<i id="passErr" title="Kata sandi minimum 6 karakter." class="fa fa-times-circle" style="visibility:hidden;color:red;"></i></label>
+                      <input id="password" name="password" class="form-control" placeholder="Password" type="password" required>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="form-group">
+                    <div class="col-md-12">
+                      <label class="control-label" for="password"><span style="color: red;">*</span>Ketik Ulang Kata Sandi&nbsp&nbsp&nbsp<i id="repassErr" title="Kata sandi tidak cocok." class="fa fa-times-circle" style="visibility:hidden;color:red;"></i></label>
+                      <input id="repassword" name="repassword" class="form-control" placeholder="Ketik Ulang Password" type="password" required>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td colspan=2>
+                  <div class="form-group">
+                    <div class="col-md-12">
+                      <label class="control-label" for="jabatan"><span style="color: red;">*</span>Jabatan</label>
+                      <select id="jabatan" name="jabatan" class="form-control" style="width: 100%;">
+                        {{ range $i := .RoleList}}
+                        {{$s := index $i 1}}
+                        {{if ne $s "Distributor"}}
+                        <option value="{{index $i 0}}">{{index $i 1}}</option>
+                        {{end}}
+                        {{end}}
+                      </select>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="form-group">
+                    <div class="col-md-12">
+                      <label class="control-label" for="nomor_ktp"><span style="color: red;">*</span>Nomor KTP&nbsp&nbsp&nbsp<i id="ktpErr" title="Nomor KTP harus terdiri dari 16 digit angka."  class="fa fa-times-circle" style="visibility:hidden;color:red;"></i></label>
+                      <input id="ktp" name="ktp" class="form-control" min=0 minlength="16" maxlength="16"  placeholder="Nomor KTP" type="text" required value="{{.ktp}}">
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="form-group">
+                    <div class="col-md-12">
+                      <label class="control-label" for="tanggal_lahir"><span style="color: red;">*</span>Tanggal Lahir</label>
+                      <input name="tanggal_lahir" class="form-control" value="1990-09-09" type="date" required>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="form-group">
+                    <div class="col-md-12">
+                      <label class="control-label" for="jenis_kelamin"><span style="color: red;">*</span>Jenis Kelamin</label>
+                      <select id="jenis_kelamin" name="jenis_kelamin" class="form-control">
+                        <option value="M" selected="selected">&#9794 Laki-Laki</option>
+                        <option value="F">&#9792 Perempuan</option>
+                      </select>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="form-group">
+                    <div class="col-md-12">
+                      <label class="control-label" for="handphone"><span style="color: red;">*</span>Nomor Handphone&nbsp&nbsp&nbsp<i id="hpErr" title="Nomor Telepon terdiri dari 6-13 digit." class="fa fa-times-circle" style="visibility:hidden;color:red;"></i></label>
+                      <div class="input-group">
+                        <span class="input-group-addon">62</span>
+                        <input id="hp" name="handphone" class="form-control" min="1" max="99999999999" placeholder="Nomor handphone"  type="number" required value="{{.handphone}}">
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br><br>
+            <div class="form-group">
+              <div class="col-md-12">
+                <button class="btn btn-primary btn-lg btn-block info">Buat Pengguna</button>
+              </div>
+            </div>
+          </div>
+          <br>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
+{{end}}

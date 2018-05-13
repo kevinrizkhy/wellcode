@@ -1,0 +1,81 @@
+<script>
+    function addFileFormOfferProposal(){
+      var table = document.getElementById("tablefile")
+      var row = table.insertRow(-1)
+      var cell1 = row.insertCell(0)
+      var cell2 = row.insertCell(1)
+      
+      var count = 1 + parseInt(document.getElementById("countoffersales").value);
+      document.getElementById("countoffersales").value = count;
+      //alert(document.getElementById("countoffersales").value)
+      var name = "offer_file_"+count;
+
+      cell1.innerHTML= "<input name='"+name+"' required class='form-control' placeholder='Spesifikasi' type='file'/>"
+      cell2.innerHTML="<center><i class='fa fa-times' aria-hidden='true' style='color: red;text-align:center' onclick='deleteRow()'></i></center>"
+
+      // var divvar = document.getElementById("files");
+      // var element2 = document.createElement("br");
+      // divvar.appendChild(element2);
+      // divvar.appendChild(element2);
+      return false
+      window.scrollTo(0, document.body.scrollHeight);
+      return false
+    }
+
+    function deleteRow(){
+      var count = parseInt(document.getElementById("countoffersales").value) - 1;
+      document.getElementById("countoffersales").value = count;
+      document.getElementById("tablefile").deleteRow(-1);
+    }
+</script>
+
+<div id="penawaran" style="display: none;">
+  <form  enctype="multipart/form-data" id="form-work" class="timeline-block" name="form-work" action="/offer" method="POST">
+    <div class="fancy-header">
+      <i class="fa fa-envelope-o" aria-hidden="true"></i><br>
+      {{Judul}}
+    </div>
+    <div class="form-group row">
+      <div class="col-md-12">
+        <label for="description">Deskripsi</label>
+        <textarea class="form-control" id="description" name="offer_description" rows="3" required></textarea>
+        <input name="countoffersales" id="countoffersales" type="text" style="border: 0 !important; display: none;" required value="1" />
+        <label for="specification">Lampiran</label>
+        <table id="tablefile" style='width:100%;'>
+          <tr>
+            <td><input name='offer_file_1' required class='form-control' placeholder='Spesifikasi' type='file' /></td>
+            <td><i class='fa fa-times' aria-hidden='true' style='color: red; visibility: hidden'></i></td>
+          </tr>
+        </table>
+        <a href="#" onclick="return addFileFormOfferProposal()">Tambah file</a>
+        <input name="history_id" type="text" style="border: 0 !important; display: none;" required value="{{History}}" />
+        <input name="distributor_id" type="text" style="border: 0 !important; display: none;" required value="{{DistributorID}}" />
+        <div class="buttons">
+          <button class="button button-ok" type="submit">Ajukan Penawaran</button>
+        </div>
+        <!--multipart file here-->
+      </div>
+    </div>
+  </form>
+</div>
+<div id="reject" style="display: none;">
+  <form  enctype="multipart/form-data" id="form-work" class="timeline-block" name="form-work" action="/cancelorder" method="POST">
+    <div class="fancy-header failed">
+      <i class="fa fa-envelope-open-o" aria-hidden="true"></i><br>
+      PEMBATALAN PEMBELIAN
+    </div>
+    <div class="form-group row">
+      <div class="col-md-12">
+        <label for="description">Alasan Pembatalan</label>
+        <textarea class="form-control" id="description" name="alasan" rows="3" required></textarea>
+        <input name="history_id" type="text" style="border: 0 !important; display: none;" required value="{{History}}" />
+        <input name="distributor_id" type="text" style="border: 0 !important; display: none;" required value="{{DistributorID}}" />
+        <div class="buttons">
+          <button class="button button-ok" type="submit">Batal</button>
+        </div>
+        <!--multipart file here-->
+      </div>
+    </div>
+  </div>
+</form>
+</div>

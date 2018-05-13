@@ -1,0 +1,158 @@
+{{define "content"}}
+<meta charset="UTF-8">
+<title>Profile</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!--   <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script> -->
+<link rel="stylesheet" href="{{.BaseURL}}assets/css/style-login.css">
+<script>
+  $(function() {
+    $('.pop').on('click', function() {
+      {{if .profile_picture}}
+      $('.imagepreview').attr('src', "{{.BaseURL}}assets/profile_picture/{{.profile_picture}}");
+      {{else}}
+      $('.imagepreview').attr('src', "{{.BaseURL}}assets/profile_picture/default.jpg");
+      {{end}}
+      $('#imagemodal').modal('show');   
+    });   
+  });
+</script>
+
+<div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">              
+      <div class="modal-body">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <img src="" class="imagepreview" style="width: 100%;" >
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="wrapper" class="container" style="padding-top: 0;">
+  <div style="margin: 0 auto;">
+    <div class="col-md-12"  style="padding: 2% 0;">
+      <!-- Profile Image -->
+      <a href="#" class="pop">
+      {{if .Profil_picture}}
+        <img id="profPic" class="profile-user-img img-responsive img-circle" alt="{{.Name}}" src="{{.BaseURL}}assets/profile_picture/{{.Profil_picture}}" style="height: 120px !important;width: 120px !important;text-align: center;">
+        {{else}}
+        <img id="profPic" class="profile-user-img img-responsive img-circle" alt="{{.Name}}" src="{{.BaseURL}}assets/profile_picture/default.jpg" style="height: 120px !important;width: 120px !important;text-align: center;">
+        {{end}}
+      </a>
+      <p class="text-muted text-center">{{.Role}}</p>
+      <ul class="list-group list-group-unbordered">
+      </ul>
+    </div>
+    <div>
+      <div class="form-group">
+        <div class="row">
+          <div class="col-sm-4" style="padding-top: 10px; padding-bottom: 10px;">
+            <div class="form-group">
+              <div class="input-group">
+                <span class="input-group-addon"><i class="far fa-envelope"></i></span>
+                <input disabled name="email" class="form-control" value="{{.Email}}" type="text">
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4" style="padding-top: 10px; padding-bottom: 10px;">
+            <div class="form-group">
+              <div class="input-group">
+                <span class="input-group-addon"><i class="far fa-user"></i></span>
+                <input disabled name="" class="form-control" value="{{.Name}}" type="text">
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4" style="padding-top: 10px; padding-bottom: 10px;">
+            <div class="form-group">
+              <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-suitcase"></i></span>
+                <input disabled name="email" class="form-control" value="{{.Jabatan}}" type="text">
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4" style="padding-top: 10px; padding-bottom: 10px;">
+            <div class="form-group">
+              <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-industry"></i></span>
+                <input disabled name="email" class="form-control" value="{{.Nama_perusahaan}}" type="text">
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4" style="padding-top: 10px; padding-bottom: 10px;">
+            <div class="form-group">
+              <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-map-pin"></i></span>
+                <input disabled name="email" class="form-control" value="{{.Alamat_perusahaan}}" type="text">
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4" style="padding-top: 10px; padding-bottom: 10px;">
+            <div class="form-group">
+              <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-phone-square"></i></span>
+                <input disabled name="email" class="form-control" value="{{.Nomor_telepon_saat}}" type="text">
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4" style="padding-top: 10px; padding-bottom: 10px;">
+            <div class="form-group">
+              <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-mobile"></i></span>
+                <input disabled name="email" class="form-control" value="{{.Nomor_handphone}}" type="text">
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4" style="padding-top: 10px; padding-bottom: 10px;">
+            <div class="form-group">
+              <div class="input-group">
+                <span class="input-group-addon"><i class="far fa-id-card"></i></span>
+                <input disabled name="email" class="form-control" value="{{.Nomor_ktp}}" type="text">
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4" style="padding-top: 10px; padding-bottom: 10px;">
+            <div class="form-group">
+              <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-venus-mars"></i></span>
+                <input disabled name="email" class="form-control" value="{{.Jenis_kelamin}}" type="text">
+              </div>
+            </div>
+          </div>
+          {{if eq .Role "Distributor"}}
+          <div class="col-sm-12" style="padding-top: 10px; padding-bottom: 10px;">
+            <div class="form-group">
+              <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-map"></i></span>
+                <input disabled name="email" class="form-control" value="{{.District}}" type="text">
+              </div>
+            </div>
+          </div>
+          <form  id="form-work" class="" name="form-work" action="/cancelmembership"  method="POST">
+            <div class="form-group">
+              <div class="col-md-4 col-md-offset-2">
+                <button class="btn btn-primary btn-lg btn-block info" style="background: red;">Pemberhentian Kerjasama</button>
+              </div>
+            </div>
+          </form>
+          <form  id="form-work" class="" name="form-work" action="/edit/profile"  method="POST">
+            <div class="form-group">
+              <div class="col-md-4">
+                <button class="btn btn-primary btn-lg btn-block info">Ubah Profil</button>
+              </div>
+            </div>
+          </form>
+          {{else}}           
+          <form  id="form-work" class="" name="form-work" action="/edit/profile"  method="POST">
+            <div class="form-group">
+              <div class="col-md-4 col-md-offset-4">
+                <button class="btn btn-primary btn-lg btn-block info">Edit</button>
+              </div>
+            </div>
+          </form>
+          {{end}}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{{end}}

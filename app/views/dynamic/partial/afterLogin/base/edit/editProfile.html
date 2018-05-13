@@ -1,0 +1,194 @@
+{{define "content"}}
+<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+<link rel="stylesheet" href="{{.BaseURL}}assets/css/style-login.css">
+<script src="{{.BaseURL}}assets/js/editprofile.js"></script>
+<script type="text/javascript">
+  function uploadOpen(){
+    document.getElementById("inputOpen").click();
+  }
+  function upload(input){
+    if (input.files && input.files[0]) {
+      if (input.files[0].size < 2000000){
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          $('#profPic').attr('src', e.target.result);
+        //$('#profPic2').css('background-image', "url("+e.target.result+")");
+      };
+      reader.readAsDataURL(input.files[0]);
+      var formData = new FormData($('#uploadprofpic')[0]);
+      $.ajax({
+        url:"/edit/profpic",
+        method:"POST", //First change type to method here
+        data: formData,
+        processData: false,
+        contentType:false,
+        success:function(response) {
+         location.reload();
+       },
+       error:function(){
+        alert("Foto gagal disimpan! \n Silahkan coba kembali beberapa saat lagi.")
+      }
+    });
+    }else{
+      alert("Ukuran file melebihi 2MB.")
+    }
+  }
+}
+
+</script>
+<style type="text/css">
+.profpic2 {
+  width: 120px;
+  height: 120px;
+  background-image: url("{{.BaseURL}}assets/img/user2-160x160.jpg" alt="{{.Name}}");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  border-radius: 50%;
+  margin: 0 auto;
+}
+</style>
+<div id="wrapper" class="container" style="padding-top: 0;">
+  <div style="margin: 0 auto;">
+    <div class="col-md-12"  style="padding: 2% 0;">
+      <!-- Profile Image -->
+      <form id='uploadprofpic' action="/edit/profpic" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+        <input id="inputOpen" name="inputOpen" type='file' onchange="upload(this);" style="display: none;" />
+      </form>
+      <div class="profpic2 text-center" onclick="uploadOpen()" id="profPic2" >
+        {{if .Profil_picture}}
+        <img id="profPic" class="profile-user-img img-responsive img-circle" alt="{{.Name}}" src="{{.BaseURL}}assets/profile_picture/thumbnail_{{.Profil_picture}}" style="height: 120px !important;width: 120px !important;text-align: center;">
+        {{else}}
+        <img id="profPic" class="profile-user-img img-responsive img-circle" alt="{{.Name}}" src="{{.BaseURL}}assets/profile_picture/default.jpg" style="height: 120px !important;width: 120px !important;text-align: center;">
+        {{end}}
+      </div>
+      <!-- <h3 class="profile-username text-center">{{.Name}}</h3> -->
+      <p class="text-muted text-center">{{.Role}}</p>
+      <p id="error" style="color: red;"></p>
+      <ul class="list-group list-group-unbordered">
+      </ul>
+    </div>
+    <form  id="form-work" class="" name="form-work" action="/editprofiledata"  method="POST">
+      <div>
+        <div class="form-group">
+          <div class="row">
+            <div class="col-sm-3" style="padding-top: 10px; padding-bottom: 10px;">
+              <div class="form-group">
+                <div class="input-group">
+                  <span class="input-group-addon"><i class="far fa-envelope"></i></span>
+                  <input  name="email" class="form-control" value="{{.Email}}" type="email" disabled>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-3" style="padding-top: 10px; padding-bottom: 10px;">
+              <div class="form-group">
+                <div class="input-group">
+                  <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                  <input onchange="namaF()" id="namaF" name="nama_penanggung_jawab_depan" class="form-control" value="{{.FName}}" type="text" required>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-3" style="padding-top: 10px; padding-bottom: 10px;">
+              <div class="form-group">
+                <div class="input-group">
+                  <span class="input-group-addon"><i class="far fa-user"></i></span>
+                  <input onchange="namaL()" id="namaL" name="nama_penanggung_jawab_belakang" class="form-control" value="{{.LName}}" type="text" required>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-3" style="padding-top: 10px; padding-bottom: 10px;">
+              <div class="form-group">
+                <div class="input-group">
+                  <span class="input-group-addon"><i class="fa fa-suitcase"></i></span>
+                  <input onchange="jabatan()" id="jabatan" name="jabatan" class="form-control" value="{{.Jabatan}}" type="text">
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-3" style="padding-top: 10px; padding-bottom: 10px;">
+              <div class="form-group">
+                <div class="input-group">
+                  <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                  <input  name="tanggal_lahir" value="{{.Birthday}}" class="form-control" type="date">
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-3" style="padding-top: 10px; padding-bottom: 10px;">
+              <div class="form-group">
+                <div class="input-group">
+                  <span class="input-group-addon"><i class="fa fa-phone-square"></i></span>
+                  <input onchange="saat()" id="saat" name="nomor_telepon_saat" class="form-control" value="{{.Nomor_telepon_saat}}" type="number" required>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-3" style="padding-top: 10px; padding-bottom: 10px;">
+              <div class="form-group">
+                <div class="input-group">
+                  <span class="input-group-addon"><i class="fa fa-mobile"></i></span>
+                  <input id="hp" onchange="hp()" name="nomor_handphone" class="form-control" value="{{.Nomor_handphone}}" type="number" required>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-3" style="padding-top: 10px; padding-bottom: 10px;">
+              <div class="form-group">
+                <div class="input-group">
+                  <span class="input-group-addon"><i class="far fa-id-card"></i></span>
+                  <input id="ktp" onchange="ktp()" name="ktp" class="form-control" value="{{.Nomor_ktp}}" type="number">
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-3" style="padding-top: 10px; padding-bottom: 10px;">
+              <div class="form-group">
+                <div class="input-group">
+                  <span class="input-group-addon"><i class="fa fa-venus-mars"></i></span>
+                  <select id="jenis_kelamin" name="jenis_kelamin" class="form-control">
+                    <option value="M" selected="selected">&#9794 Laki-Laki</option required>
+                      <option value="F">&#9792 Perempuan</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-3" style="padding-top: 10px; padding-bottom: 10px;">
+                <div class="form-group">
+                  <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-industry"></i></span>
+                    <input onchange="namaPerusahaan()" id="namaPerusahaan" name="nama_perusahaan" class="form-control" value="{{.Nama_perusahaan}}" type="text">
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6" style="padding-top: 10px; padding-bottom: 10px;">
+                <div class="form-group">
+                  <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-map-pin"></i></span>
+                    <input onchange="alamatPerusahaan()" id="alamatPerusahaan" name="alamat_perusahaan" class="form-control" value="{{.Alamat_perusahaan}}" type="text">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-12" style="padding: 10px 0">
+              <div class="form-group">
+                <div class="input-group">
+                  <span class="input-group-addon"><i class="fa fa-map"></i></span>
+                  <input  name="region" class="form-control" value="{{.District}}" type="text" disabled>
+                  <input  name="csrf" class="form-control" value="{{.CSRF}}" type="hidden">
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-sm-offset-4 col-sm-2">
+                <button class="btn btn-primary btn-lg btn-block info" style="background-color: #99c116">Simpan</button>
+              </div>
+            </div>
+          </form>
+          <form  id="form-work" class="" name="form-work" action="/edit/password"  method="POST">
+            <div class="form-group">
+              <div class="col-md-2">
+                <button class="btn btn-primary btn-lg btn-block info">Ubah Password</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{{end}}

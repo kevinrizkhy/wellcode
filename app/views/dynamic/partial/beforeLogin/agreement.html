@@ -1,0 +1,839 @@
+{{define "content"}}
+<script src="{{.BaseURL}}assets/js/agreement/jquery-1.9.1.min.js"></script>
+<script src="{{.BaseURL}}assets/css/bower_components/jquery/dist/jquery.min.js"></script>
+<script src="{{.BaseURL}}assets/css/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+  var type = "Standar";
+  var position = 21;
+  {{if .AgreementType}}
+  $( document ).ready(function() {
+    var type = {{.AgreementType}};
+    if(type=="Standar"){
+      document.getElementById("content_standard").style.display="block";
+    }else{
+      document.getElementById("content_premium").style.display="block";
+    }
+  });
+  {{end}}
+  function next(params){
+    if (params==0){
+      var type = document.getElementById("agreementType").value;
+      document.getElementById("select_agreement").style.display="none";
+      if(type=="Premium"){
+        document.getElementById("content_premium").style.display="block";
+      }else if (type=="Standar"){
+        document.getElementById("content_standard").style.display="block";
+      }
+    }
+    if ((params+1)==position+1){
+      position++;
+      document.getElementById("tab"+position).classList.remove("disabled");
+    }
+    document.getElementById("tab"+(params+1)).click()
+  }
+  function back(params){
+    document.getElementById("tab"+params).classList.remove("active");
+    if(params-1==0){
+      document.getElementById("content_premium").style.display="none";
+      document.getElementById("content_standard").style.display="none";
+      document.getElementById("select_agreement").style.display="block";
+    }else{
+      document.getElementById("tab"+(params-1)).click()
+      document.getElementById("tab"+(params-1)).classList.add("active");
+    }
+    
+  }
+  function finish(){
+    document.getElementById("popupbutton").click();
+  }
+  function submitForm(){
+    document.getElementById("csrfButton").click();
+  }
+  function agreementType(){
+   var radios = document.getElementsByName('optionsRadios');
+   for (var i = 0, length = radios.length; i < length; i++)
+   {
+     if (radios[i].checked)
+     {
+      type = radios[i].value;
+      if(type=="Premium"){
+        position=1;
+      }else{
+        position=21;
+      }
+      document.getElementById("agreementType").value = type;
+      break;
+    }
+  }
+}
+</script>
+<style type="text/css" media="screen">
+.disabled {
+ pointer-events: none;
+ cursor: default;
+ color: #D3D3D3 !important;
+}  
+.floatleft{
+  float: left !important;
+  display: inline !important;
+}
+.floatright{
+  float: right !important;
+  display: inline !important;
+}
+.tab-pane{
+  min-height: 400px;
+  max-height: 600px;
+}
+.contentpane{
+  overflow: auto;
+  height: 400px;
+}
+</style>
+{{if .Join}}
+
+{{else}}
+<h1 class="page-header" style="text-align: center;margin-bottom: 0;">PERJANJIAN KERJA SAMA</h1>
+
+<section class="content" id="select_agreement">
+  <div class="col-md-12">
+    <div class="nav-tabs-custom">
+      <div class="tab-content">
+        <div class="tab-pane active" id="tab_1" >
+          <div class="contentpane">
+           <div class="form-group">
+            <div class="radio">
+              <label>
+                <input type="radio" name="optionsRadios" id="optionsRadios1" value="Standar" checked onchange="agreementType()">
+                Standar
+              </label>
+            </div>
+            <div class="radio">
+              <label>
+                <input type="radio" name="optionsRadios" id="optionsRadios2" value="Premium" onchange="agreementType()">
+                Premium
+              </label>
+            </div>
+          </div>
+        </div>
+        <div>
+          <button class="btn btn-primary floatright"  onclick="next(0)">Selanjutnya</button>
+        </div><br><br>
+      </div>
+      <!-- /.tab-content -->
+    </div>
+    <!-- nav-tabs-custom -->
+  </div>
+  <!-- /.col -->
+</div>
+</section>
+
+<form action="/activateddata" method="POST">
+  <input type="hidden" name="csrf" value="{{.CSRF}}">
+  <input type="hidden" name="digital_signature" value="{{.CSRF}}">
+  <input type="hidden" name="agreementType" value="Standar" id="agreementType">
+  <button class="btn btn-default" type="submit" id="csrfButton" name="csrfButton" style="display: none;">Konfirmasi</button>
+</form>
+
+<button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-default" id="popupbutton" hidden style="display: none;"></button>
+<div class="modal fade" id="modal-default">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">Konfirmasi Perjanjian</h4>
+      </div>
+      <div class="modal-body">
+        <p>Apakah Anda yakin bahwa Anda menyetujui seluruh isi perjanjian tersebut?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Kembali</button>
+        <button type="button" class="btn btn-primary" onclick="submitForm()">Konfirmasi</button>
+      </div>
+    </div>
+  </div>
+</div>
+{{end}}
+
+
+<section class="content" id="content_premium" style="display: none;">
+  <div class="col-md-12">
+    <div class="nav-tabs-custom">
+      <ul class="nav nav-tabs">
+        <li><a href="#tab_16" data-toggle="tab" id="tab1"  class="active">*</a></li>
+        <li><a href="#tab_2" data-toggle="tab" class="disabled" id="tab2">Pasal 1</a></li>
+        <li><a href="#tab_3" data-toggle="tab" class="disabled" id="tab3">Pasal 2</a></li>
+        <li><a href="#tab_4" data-toggle="tab" class="disabled" id="tab4">Pasal 3</a></li>
+        <li><a href="#tab_5" data-toggle="tab" class="disabled" id="tab5">Pasal 4</a></li>
+        <li><a href="#tab_6" data-toggle="tab" class="disabled" id="tab6">Pasal 5</a></li>
+        <li><a href="#tab_7" data-toggle="tab" class="disabled" id="tab7">Pasal 6</a></li>
+        <li><a href="#tab_8" data-toggle="tab" class="disabled" id="tab8">Pasal 7</a></li>
+        <li><a href="#tab_9" data-toggle="tab" class="disabled" id="tab9">Pasal 8</a></li>
+        <li><a href="#tab_10" data-toggle="tab" class="disabled" id="tab10">Pasal 9</a></li>
+        <li><a href="#tab_11" data-toggle="tab" class="disabled" id="tab11">Pasal 10</a></li>
+        <li><a href="#tab_12" data-toggle="tab" class="disabled" id="tab12">Pasal 11</a></li>
+        <li><a href="#tab_13" data-toggle="tab" class="disabled" id="tab13">Pasal 12</a></li>
+        <li><a href="#tab_14" data-toggle="tab" class="disabled" id="tab14">Pasal 13</a></li>
+      </ul>
+      <div class="tab-content">
+        <div class="tab-pane active" id="tab_16" >
+          <div class="contentpane">
+            <p>Yang bertanda tangan di bawah ini:</p>
+            <table style="text-align: left; padding: 8px; margin-left: 2%;">
+              <tr>
+                <td><b>Nama</b> &nbsp &nbsp</td>
+                <td>:</td>
+                <td> &nbsp &nbsp {{.NamaSIP}}</td>
+              </tr>
+              <tr>
+                <td><b>Jabatan</b> &nbsp &nbsp</td>
+                <td>:</td>
+                <td>&nbsp &nbsp {{.JabatanSIP}}</td>
+              </tr>
+              <tr>
+                <td><b>Alamat</b> &nbsp &nbsp</td>
+                <td>:</td>
+                <td>&nbsp &nbsp {{.AlamatSIP}}</td>
+              </tr>
+            </table>
+            <p> Dalam hal ini bertindak sebagai wakil dari <b>PT. Sinar Inti Panel</b> dan untuk selanjutnya disebut <b>Pihak Pertama</b>. </p>
+            <table style="text-align: left; padding: 8px; margin-left: 2%;">
+              <tr>
+                <td><b>Nama</b> &nbsp &nbsp</td>
+                <td>:</td>
+                <td> &nbsp &nbsp {{.NamaCustomer}}</td>
+              </tr>
+              <tr>
+                <td><b>Jabatan</b> &nbsp &nbsp</td>
+                <td>:</td>
+                <td>&nbsp &nbsp {{.JabatanCustomer}}</td>
+              </tr>
+              <tr>
+                <td><b>Alamat</b> &nbsp &nbsp</td>
+                <td>:</td>
+                <td>&nbsp &nbsp {{.AlamatCustomer}}</td>
+              </tr>
+              <input type="hidden" name="csrf" id="csrf" value="{{.CSRF}}">
+            </table>
+            <p>Dalam hal ini bertindak sebagai wakil dari <b>{{.NamaPerusahaanCustomer}}</b> dan untuk selanjutnya disebut <b>Pihak Kedua</b>.</p>
+            <br>
+            <p> Bersama ini PIHAK KEDUA mengerti, setuju dan bersedia menurut hukum untuk mengikatkan diri dengan ketentuan-ketentuan sebagai berikut:</p>
+          </div>
+          <div >
+            <button class="btn btn-primary floatleft"  onclick="back(1)">Pilih Tipe</button>
+            <button class="btn btn-primary floatright"  onclick="next(1)">Selanjutnya</button>
+          </div><br><br>
+        </div>
+
+
+        <div class="tab-pane" id="tab_2">
+          <div align="center" style="font-size: 17px;color: #A9A9A9;">PASAL 1</div>
+          <div align="center" style="font-size: 20px;color: #3c8dbc;padding-bottom: 10px;">BENTUK KERJA SAMA</div>
+          <div class="contentpane">
+            <p>Selama mengikuti program ini PIHAK KEDUA <b>tidak diperkenankan</b> untuk menjual produk sandwich panel dari perusahaan lain selain PT. Sinar Inti Panel tanpa seijin PIHAK PERTAMA.<br>
+            Untuk setiap proyek PIHAK KEDUA diberikan beberapa pilihan bentuk kerja sama. Pilihan ini hanya berlaku per masing-masing proyek saja. Jadi bila PIHAK KEDUA memilih satu bentuk kerja sama untuk satu proyek, proyek lain tidak harus mengikuti bentuk kerja sama yang sama. Berikut adalah bentuk kerja sama yang PIHAK PERTAMA tawarkan:</p>
+            <ol>
+              <li><b>Jual Beli Barang</b></li>
+              <p>Dalam bentuk kerja sama ini PIHAK KEDUA hanya berlaku sebagai pembeli produk PIHAK PERTAMA. Artinya, proses instalasi akan dilakukan oleh PIHAK KEDUA tanpa campur tangan dari PIHAK PERTAMA. Harga jual PIHAK KEDUA kepada customer adalah sepenuhnya hak PIHAK KEDUA. Gambar, Material breakdown dan estimasi harga tidak akan dibantu oleh PIHAK PERTAMA.</p>
+              <li><b>Referensi Dari Pihak Pertama</b></li>
+              <p>Dalam bentuk kerja sama ini PIHAK KEDUA berlaku sebagai perpanjangan tangan dari PIHAK PERTAMA namun membawa nama PIHAK KEDUA atau perusahaan PIHAK KEDUA. Sebelumnya PIHAK PERTAMA akan menawarkan atau memberikan referensi kepada PIHAK KEDUA untuk mengerjakan sebuah proyek dan ketika PIHAK KEDUA setuju untuk mengerjakan proyek ini, proses instalasi akan dilakukan oleh PIHAK KEDUA dengan supervisi dari tim PIHAK PERTAMA untuk menjaga kualitas instalasinya. Dalam bentuk kerja sama ini, PIHAK KEDUA juga akan dikenakan biaya supervisi sebesar 5% dari total harga materi yang dibeli dari PIHAK PERTAMA. Harga jual PIHAK KEDUA kepada customer harus sesuai arahan PIHAK PERTAMA. Gambar, Material breakdown dan estimasi harga akan dibantu oleh PIHAK PERTAMA.</p>
+              <li><b>Sub-kon Instalasi</b></li>
+              <p>Dalam bentuk kerja sama ini PIHAK KEDUA hanya menyediakan jasa instalasi saja dan memberikan penawaran jasa tersebut kepada PIHAK PERTAMA sesuai dengan standar pengajuan penawaran / tender PIHAK PERTAMA. Proses perancangan dan material breakdown akan dilakukan oleh tim PIHAK PERTAMA.</p>
+              <p>Perlu diperhatikan bahwa:</p>
+              <ul>
+                <li>Bantuan pembuatan approval drawing yang diberikan PIHAK PERTAMA hanya terbatas kepada gambar dan hitungan dalam lingkup sandwich panel dan akan dilakukan sesuai standar PIHAK PERTAMA</li>
+                <li>Bantuan administrasi dan QC lapangan yg diberikan PIHAK PERTAMA hanya terbatas dalam lingkup pekerjaan sandwich panel, dan bantuan tersebut dilakukan sesuai standar PIHAK PERTAMA.</li>
+                <li>PIHAK KEDUA wajib mempunyai Project Coordinator sendiri, dan mencari orang-orang harian sendiri<./li>
+                </ul>
+              </ol>
+            </div>
+            <div>
+              <button class="btn btn-primary floatleft"  onclick="back(2)">Sebelumnya</button>
+              <button class="btn btn-primary floatright"  onclick="next(2)">Selanjutnya</button>
+            </div><br><br>
+          </div>
+
+          <div class="tab-pane" id="tab_3">
+            <div align="center" style="font-size: 17px;color: #A9A9A9;">PASAL 2</div>
+            <div align="center" style="font-size: 20px;color: #3c8dbc;padding-bottom: 10px;">PEMBAGIAN WILAYAH</div>
+            <div class="contentpane">
+              <p>Dalam mengikuti program distribusi ini, PIHAK KEDUA berhak untuk memegang satu atau beberapa wilayah distribusi. Jadi bila PIHAK KEDUA memegang suatu wilayah dan ada distributor PIHAK PERTAMA dari wilayah lain yang mengincar proyek yang sama yang ada di wilayah PIHAK KEDUA, maka PIHAK PERTAMA akan memberikan proyek tersebut kepada PIHAK KEDUA. Sebaliknya, bila PIHAK KEDUA yang memegang suatu wilayah dan mengincar proyek di wilayah lain yang sama dengan distributor PIHAK PERTAMA yang memegang wilayah tersebut, PIHAK PERTAMA akan memberikannya kepada distributor PIHAK PERTAMA di wilayah tersebut. Namun PIHAK KEDUA diperkenankan untuk mengincar suatu proyek di wilayah yang bukan kekuasaan PIHAK KEDUA ketika distributor yang berkuasa di wilayah tersebut tidak mengincarnya.</p>
+            </div>
+            <div>
+              <button class="btn btn-primary floatleft"  onclick="back(3)">Sebelumnya</button>
+              <button class="btn btn-primary floatright"  onclick="next(3)">Selanjutnya</button>
+            </div><br><br>
+          </div>
+
+          <div class="tab-pane" id="tab_4">
+            <div align="center" style="font-size: 17px;color: #A9A9A9;">PASAL 3</div>
+            <div align="center" style="font-size: 20px;color: #3c8dbc;padding-bottom: 10px;">PEMESANAN PRODUK</div>
+            <div class="contentpane">
+              <p>Dalam proses pemesanan produk PIHAK KEDUA wajib mengikuti prosedur yang telah PIHAK PERTAMA ajukan dengan langkah sebagai berikut:</p>
+              <ol>
+                <li>Dalam pemesanan pembelian PIHAK KEDUA perlu untuk mengisi form purchase order online yang PIHAK PERTAMA sediakan.</li>
+                <li>PIHAK KEDUA harus memastikan bahwa customer setuju dan menandatangi <i>approval drawing</i> tersebut.</li>
+                <li><i>Delivery</i> barang akan dilakukan dalam waktu yang telah ditentukan di penawaran.</li>
+                <li>Setelah barang sampai di tangan PIHAK KEDUA, PIHAK KEDUA wajib untuk memeriksa jumlah dan kualitas barang dan memastikan bahwa semua barang sesuai dengan pesanan yang PIHAK KEDUA telah lakukan ketika PIHAK KEDUA mengambil barang atau ketika <i>Delivery Truck</i> sampai di lokasi. PIHAK KEDUA perlu menandatangani form <i>Quality Control</i> dan serah terima barang.</li>
+              </ol>
+            </div>
+            <div>
+              <button class="btn btn-primary floatleft"  onclick="back(4)">Sebelumnya</button>
+              <button class="btn btn-primary floatright"  onclick="next(4)">Selanjutnya</button>
+            </div><br><br>
+          </div>
+
+
+
+          <div class="tab-pane" id="tab_5">
+            <div align="center" style="font-size: 17px;color: #A9A9A9;">PASAL 4</div>
+            <div align="center" style="font-size: 20px;color: #3c8dbc;padding-bottom: 10px;">KEUNTUNGAN</div>
+            <div class="contentpane">
+              <p>Keuntungan yang PIHAK KEDUA peroleh dengan mengikuti program distributor ini adalah sebagai berikut:</p>
+              <ol>
+                <li><b>Kesempatan Berwirausaha</b></li>
+                <p>Kami memiliki visi untuk mensejahterakan semua distributor PIHAK PERTAMA. Karena itu PIHAK PERTAMA akan terus memberi dukungan dan dorongan untuk membuat bisnis PIHAK KEDUA lebih maju. Kami akan membantu PIHAK KEDUA untuk meraih prestasi sebagai wiraswasta dengan memberikan berbagai macam management support dan edukasi bisnis.</p>
+                <li><b>Harga Spesial</b></li>
+                <p>Dengan menjadi distributor PIHAK PERTAMA, PIHAK KEDUA akan memperoleh harga spesial dari PIHAK PERTAMA harga ini hanya berlaku untuk PIHAK KEDUA saja. PIHAK KEDUA tidak diperkenankan menyebarluaskan harga ini.</p>
+                <li><b>Kemudahan Bisnis (jika PIHAK KEDUA menghendaki)</b></li>
+                <p>Sebagai distributor PIHAK PERTAMA, tim PIHAK PERTAMA akan siap sedia membantu PIHAK KEDUA dalam mendukung PIHAK KEDUA mencapai hasil yang baik di mata konsumen. Kami akan menyediakan tim support secara khusus untuk membantu PIHAK KEDUA dalam bagian administrasi, engineering, dan QC lapangan. Jadi PIHAK KEDUA tidak perlu untuk merekrut tenaga ahli untuk tugas-tugas tersebut.</p><p>Perlu diperhatikan bahwa:</p>
+                <ol type="a">
+                  <li>Bantuan pembuatan approval drawing yang diberikan PIHAK PERTAMA hanya terbatas kepada gambar dan hitungan dalam lingkup sandwich panel dan akan dilakukan sesuai standar PIHAK PERTAMA</li>
+                  <li>Bantuan administrasi dan QC lapangan yg diberikan PIHAK PERTAMA hanya terbatas dalam lingkup pekerjaan sandwich panel, dan bantuan tersebut dilakukan sesuai standar PIHAK PERTAMA.</li>
+                  <li>PIHAK KEDUA wajib mempunyai Project Coordinator sendiri, dan mencari orang-orang harian sendiri</li>
+                  <br>
+                </ol>
+                <li><b>Referensi Proyek Panel</b></li>
+                <p>Kami memiliki banyak prospek dalam proyek-proyek di berbagai wilayah di Indonesia. PIHAK KEDUA sebagai distributor di suatu wilayah akan direferensikan kepada proyek tersebut di mana PIHAK KEDUA dapat mengambil bagian dalam proses pengadaan dan instalasi proyek ini.</p>
+                <li><b>Referensi Proyek Lain</b></li>
+                <p>Selain daripada proyek panel, PIHAK PERTAMA memiliki banyak koneksi ke berbagai bisnis dan proyek lain. Bila PIHAK KEDUA juga memiliki bisnis lain di luar sandwich panel dan PIHAK KEDUA membuktikan bahwa kinerja PIHAK KEDUA baik. Kami juga akan membantu mereferensikan PIHAK KEDUA kepada proyek-proyek pembangunan lainnya (Contoh: Sipil, ME, HVAC, Epoxy, Water Treatment, dll).</p>
+              </ol>
+            </div>
+            <div>
+              <button class="btn btn-primary floatleft"  onclick="back(5)">Sebelumnya</button>
+              <button class="btn btn-primary floatright"  onclick="next(5)">Selanjutnya</button>
+            </div><br><br>
+          </div>
+
+          <div class="tab-pane" id="tab_6">
+            <div align="center" style="font-size: 17px;color: #A9A9A9;">PASAL 5</div>
+            <div align="center" style="font-size: 20px;color: #3c8dbc;padding-bottom: 10px;">TARGET PENCAPAIAN</div>
+            <div class="contentpane">
+              <p>Karena PIHAK KEDUA akan dipercaya untuk memegang suatu wilayah, maka PIHAK KEDUA akan diberikan target yang PIHAK PERTAMA tentukan yang harus PIHAK KEDUA capai sebagai distributor PIHAK PERTAMA. Target di tahun ini PIHAK KEDUA harus mencapai total penjualan minimal sebesar Rp. 500.000.000,00. Bila PIHAK KEDUA tidak mencapai target ini, maka PIHAK PERTAMA berhak untuk memberhentikan PIHAK KEDUA sebagai distributor resmi PIHAK PERTAMA.</p>
+              <p>Pihak Sinar Inti Panel berhak untuk memberikan kenaikan target tahunan dengan batas persentasi.</p>
+              <ol type="A">
+                <li><b>PENGHARGAAN</b></li>
+                <p>Bila PIHAK KEDUA memiliki kinerja yang baik dan mencapai hasil yang baik PIHAK PERTAMA akan memberikan PIHAK KEDUA penghargaan berupa:</p>
+                <ol type="1">
+                  <li><b>Cashback</b></li>
+                  <p>PIHAK PERTAMA menyediakan cash back tahunan dengan untuk pencapaian sebagai berikut:</p>
+                  <ul>
+                    <li>Bila PIHAK KEDUA mencapai target 1,5 milyar maka pendapatan PIHAK KEDUA dari Rp. 0 sampai Rp. 1.500.000.000 akan dikenakan tarif cash back sebesar 2%.</li>
+                    <li>Bila PIHAK KEDUA mencapai target 2 milyar maka pendapatan PIHAK KEDUA dari Rp. 1.500.000.001 sampai Rp. 2.000.000.000 akan dikenakan tarif cash back sebesar 3%. Sedangkan pendapatan PIHAK KEDUA dari Rp 0 sampai Rp. 1.500.000.000 tetap hanya dikenakan tarif cash back sebesar 2%.</li>
+                    <li>Bila PIHAK KEDUA mencapai target 2.5 milyar maka pendapatan PIHAK KEDUA dari Rp. 2.000.000.001 sampai seterusnya akan dikenakan tarif cash back sebesar 5%. Sedangkan pendapatan PIHAK KEDUA dari Rp 1.500.000.001 sampai Rp. 2.000.000.000 milyar tetap hanya dikenakan tarif cash back sebesar 3%., dan pendapatan PIHAK KEDUA dari Rp 0 sampai Rp. 1.500.000.000 tetap hanya dikenakan tarif cash back sebesar 2%.</li>
+                  </ul>
+                  <p>Cash back ini akan ditransfer kepada rekening PIHAK KEDUA paling lambat 3 bulan setelah akhir tahun membership distributor (terhitung 365 hari dari tanggal pertama PIHAK KEDUA resmi disetujui sebagai distributor).</p>
+                  <li><b>Hadiah</b></li>
+                  <p>Untuk pencapaian target sampai 2,5 milyar dari PIHAK PERTAMA PIHAK KEDUA juga akan mendapatkan dapat bonus hadiah berupa Gadgets, Home Electronics, maupun Office Supplies. Pemberian hadiah ini dapat beragam setiap tahunnya. PIHAK KEDUA tidak dapat memilih hadiah yang akan diberikan, kecuali PIHAK PERTAMA memberikan pilihan tersebut.</p>
+                  <li><b>Sticker Dengan Nama Perusahaan Pihak Kedua</b></li>
+                  <p>Bila PIHAK KEDUA mencapai target sampai 1,2 milyar PIHAK KEDUA juga diperkenankan untuk mencantumkan nama dan logo perusahaan PIHAK KEDUA pada plastic cover panel yang PIHAK PERTAMA produksi. PIHAK PERTAMA berhak untuk membatalkan pemakaian logo perusahaan ini bila PIHAK KEDUA tidak mencapai target 1,2 milyar di tahun berikutnya.</p>
+                </ol>
+              </ol>
+            </div>
+            <div>
+              <button class="btn btn-primary floatleft"  onclick="back(6)">Sebelumnya</button>
+              <button class="btn btn-primary floatright"  onclick="next(6)">Selanjutnya</button>
+            </div><br><br>
+          </div>
+
+          <div class="tab-pane" id="tab_7">
+            <div align="center" style="font-size: 17px;color: #A9A9A9;">PASAL 6</div>
+            <div align="center" style="font-size: 20px;color: #3c8dbc;padding-bottom: 10px;">FASILITAS PENUNJANG</div>
+            <div class="contentpane">
+              <p>Beberapa fasilitas penunjang yang akan PIHAK KEDUA peroleh adalah sebagai berikut:</p>
+              <ol>
+                <li><b>Perlengkapan Marketing</b></li>
+                <p>PIHAK KEDUA akan diperlengkapi dengan perlengkapan marketing dari PIHAK PERTAMA, seperti brosur, sample produk panel dan ekstrusi, mock up ruangan dan lain sebagainya.</p>
+                <li><b>Harga Spesial</b></li>
+                <p>PIHAK KEDUA akan mendapatkan harga khusus dari PIHAK PERTAMA yang lebih murah dari yang seharusnya sehingga PIHAK KEDUA dapat memperoleh keuntungan dari penjualan PIHAK KEDUA. Namun PIHAK KEDUA tidak diperkenankan untuk menyebarluaskan harga yang PIHAK KEDUA peroleh ini.</p>
+                <li><b>Pelatihan Teknis</b></li>
+                <p>Kami akan memberikan PIHAK KEDUA beserta tim PIHAK KEDUA pelatihan pengaplikasian panel. PIHAK KEDUA wajib untuk menghadiri pelatihan teknis tersebut.</p>
+                <li><b>Edukasi Bisnis</b></li>
+                <p>Kami juga akan memberikan PIHAK KEDUA beserta tim PIHAK KEDUA pelatihan management, marketing dan akunting.</p>
+              </ol>
+            </div>
+            <div>
+              <button class="btn btn-primary floatleft"  onclick="back(7)">Sebelumnya</button>
+              <button class="btn btn-primary floatright"  onclick="next(7)">Selanjutnya</button>
+            </div><br><br>
+          </div>
+
+          <div class="tab-pane" id="tab_8">
+            <div align="center" style="font-size: 17px;color: #A9A9A9;">PASAL 7</div>
+            <div align="center" style="font-size: 20px;color: #3c8dbc;padding-bottom: 10px;">BIAYA</div>
+            <div class="contentpane">
+              <p>PIHAK KEDUA akan dikenakan biaya bulanan sebesar Rp. 6.000.000,00. Biaya ini dialokasikan kepada staff PIHAK PERTAMA yang akan menunjang administrasi, engineering, quality control dan pelatihan untuk PIHAK KEDUA dengan timnya. Biaya ini akan ditarik melalui direct debit setiap bulannya sesuai dengan tanggal registrasi.</p>
+            </div>
+            <div>
+              <button class="btn btn-primary floatleft"  onclick="back(8)">Sebelumnya</button>
+              <button class="btn btn-primary floatright"  onclick="next(8)">Selanjutnya</button>
+            </div><br><br>
+          </div>
+
+          <div class="tab-pane" id="tab_9">
+            <div align="center" style="font-size: 17px;color: #A9A9A9;">PASAL 8</div>
+            <div align="center" style="font-size: 20px;color: #3c8dbc;padding-bottom: 10px;">PEMBAYARAN</div>
+            <div class="contentpane">
+              <p>PIHAK KEDUA yang menggunakan metode pembayaran Direct Debit (Debet Otomatis) harus menyediakan jumlah saldo yang cukup pada saat akan dilakukan penarikan otomatis dari rekeningnya.</p>
+            </div>
+            <div>
+              <button class="btn btn-primary floatleft"  onclick="back(9)">Sebelumnya</button>
+              <button class="btn btn-primary floatright"  onclick="next(9)">Selanjutnya</button>
+            </div><br><br>
+          </div>
+
+          <div class="tab-pane" id="tab_10">
+            <div align="center" style="font-size: 17px;color: #A9A9A9;">PASAL 9</div>
+            <div align="center" style="font-size: 20px;color: #3c8dbc;padding-bottom: 10px;">SANKSI</div>
+            <div class="contentpane">
+              <p>Kami berhak memberi PIHAK KEDUA sanksi bila:</p>
+              <ol>
+                <li>Kualitas pekerjaan PIHAK KEDUA buruk.</li>
+                <li>PIHAK KEDUA terlambat mengerjakan suatu proyek sampai keluar dari waktu yang telah dijanjikan kepada konsumen.</li>
+                <li>PIHAK KEDUA membeli produk sandwich panel atau komponennya dari perusahaan lain tanpa persetujuan dari PIHAK PERTAMA.</li>
+                <li>PIHAK KEDUA membeberkan rahasia perusahaan PIHAK PERTAMA atau PIHAK KEDUA mengungkapkan harga yang PIHAK PERTAMA telah berikan khusus untuk PIHAK KEDUA.</li>
+                <li>PIHAK KEDUA tidak dapat mengikuti etika komunikasi dan tata krama umum ketika berkomunikasi dengan PIHAK PERTAMA atau dengan customer.</li>
+                <li>PIHAK KEDUA terlambat dalam melakukan pembayaran.</li>
+              </ol>
+              <p>Sanksi yang PIHAK KEDUA dapatkan dapat berupa:</p>
+              <ul style="margin-left: 2%">
+                <li><b>Bunga Keterlambatan Pembayaran
+                PIHAK KEDUA yang terlambat </b></li>
+                <p>PIHAK KEDUA yang terlambat dalam melakukan pembayaran atau pada saat akan dilakukan proses Direct Debit (Debet Otomatis) saldo tidak mencukupi, maka PIHAK KEDUA akan dikenakan sanki keterlambatan sebagai berikut :</p>
+                <ul>
+                  <li>Keterlambatan pembayaran 1 bulan dikenakan bunga 3% dari total tagihan.</li>
+                  <li>Keterlambatan pembayaran 2 bulan dikenakan bunga 10% dari total tagihan</li>
+                  <li>Keterlambatan pembayaran 3 bulan dikenakan bunga 15% dari total tagihan</li>
+                </ul>
+                <li>Surat Peringatan</li>
+                <p>Bila melakukan pelanggaran maka PIHAK KEDUA akan diberikan surat peringatan yang dengan tegas menyatakan bahwa bila PIHAK KEDUA melanggar terus maka PIHAK KEDUA akan diberikan sanksi yang tegas.</p>
+                <p>PIHAK KEDUA yang sudah menunggak pembayaran lebih dari 3 bulan akan diberikan Surat Peringatan (SP) Pertama, sementara denda terus berjalan.</p>
+                <p>Jika PIHAK KEDUA yang mengabaikan Surat Peringatan Pertama (berkaitan dengan tunggakan pembayaran) lebih dari 10 hari terhitung dari diterimanya surat, maka PIHAK KEDUA akan diberikan Surat Peringatan (SP) Kedua yang berisi teguran keras bahwa PIHAK KEDUA harus segera melunasi tagihan berserta dengan dendanya.</p>
+                <p>Jika PIHAK KEDUA tetap tidak menanggapi SP kedua maksimal 6 bulan setelah SP Kedua diterima maka PIHAK PERTAMA akan mengirimkan Surat Pemutusan Kerja sama dan PIHAK PERTAMA berhak mengajukan Proses Pailit terhadap Perusahaan PIHAK KEDUA sebagaimana diatur dalam Undang-udang Nomor 37 Tahun 2004 Tentang Kepailitan dan Penundaan Kewajiban Pembayaran Utang yang tertuang pada Pasal 2 Ayat (1).</p>
+                <li><b>Penurunan Peringkat</b></li>
+                <p>Keuntungan-keuntungan yang PIHAK KEDUA peroleh dari pencapaian PIHAK KEDUA dapat dicabut ketika PIHAK KEDUA terus melanggar aturan yang PIHAK PERTAMA berikan.</p>
+                <li><b>Blacklist</b></li>
+                <p>Bila PIHAK KEDUA sudah diberikan peringatan dan sanksi yang tegas namun PIHAK KEDUA masih saja melakukan pelanggaran, maka PIHAK PERTAMA terpaksa harus menghentikan PIHAK KEDUA dari program distribusi ini selamanya. Dan nama PIHAK KEDUA akan diumumkan di daftar blacklist PIHAK PERTAMA untuk diinformasikan kepada konsumen PIHAK PERTAMA dan distributor lain bahwa PIHAK PERTAMA sudah tidak berhubungan dengan PIHAK KEDUA lagi. Daftar blacklist akan dipublikasikan secara luas di website PIHAK PERTAMA.</p>
+                <p><p>PERTAMA sudah tidak berhubungan dengan PIHAK KEDUA lagi. Daftar blacklist akan dipublikasikan secara luas di website PIHAK PERTAMA.</p></p>
+                <li><b>Tuntutan Pidana</b></li>
+                <p>Apabila PIHAK KEDUA melakukan tindakan-tindakan yang merugikan PIHAK PERTAMA dan tindakan-tidakan tersebut memasuki kategori pidana dalam undang-undang dasar Republik Indonesia, maka PIHAK PERTAMA berhak menempuh jalur hukum dan melibatkan pihak berwenang.</p>
+                <li><b>Pemutusan Kerja Sama</b></li>
+                <p>PIHAK PERTAMA berhak secara sepihak memutuskan kerja sama dengan PIHAK KEDUA apabila PIHAK KEDUA tidak bersedia mengikuti pelatihan yang diselenggarakan oleh PIHAK PERTAMA.</p>
+              </ul>
+            </div>
+            <div>
+              <button class="btn btn-primary floatleft"  onclick="back(10)">Sebelumnya</button>
+              <button class="btn btn-primary floatright"  onclick="next(10)">Selanjutnya</button>
+            </div><br><br>
+          </div>
+
+          <div class="tab-pane" id="tab_11">
+            <div align="center" style="font-size: 17px;color: #A9A9A9;">PASAL 10</div>
+            <div align="center" style="font-size: 20px;color: #3c8dbc;padding-bottom: 10px;">MASALAH</div>
+            <div class="contentpane">
+              <p>Bila terjadi masalah atau perselisihan dengan PIHAK PERTAMA atau distributor yang lain PIHAK KEDUA wajib mengajukan surat komplain secara formal. PIHAK KEDUA dapat mengajukannya <a href="www.sinarintipanel.com">di sini</a>.</p>
+              <p>Bila perselisihan tidak kunjung selesai maka tim dari PIHAK PERTAMA akan secara langsung bertemu dengan PIHAK KEDUA untuk menyelesaikan masalah ini.</p>
+            </div>
+            <div>
+              <button class="btn btn-primary floatleft"  onclick="back(11)">Sebelumnya</button>
+              <button class="btn btn-primary floatright"  onclick="next(11)">Selanjutnya</button>
+            </div><br><br>
+          </div>
+
+          <div class="tab-pane" id="tab_12">
+            <div align="center" style="font-size: 17px;color: #A9A9A9;">PASAL 11</div>
+            <div align="center" style="font-size: 20px;color: #3c8dbc;padding-bottom: 10px;">ACARA WAJIB</div>
+            <div class="contentpane">
+              <p>Kami akan mengadakan acara rutin (gathering) yang bertujuan untuk:</p>
+              <ol>
+                <li>Memberi informasi seputar program distribusi</li>
+                <li>Pengenalan produk Sinar Inti Panel dan pelatihan teknis.</li>
+                <li>Seminar seputar bisnis dan marketing</li>
+              </ol>
+              <p>Sebagai distributor PIHAK PERTAMA. PIHAK KEDUA diwajibkan untuk mengikuti acara-acara tersebut yang akan PIHAK PERTAMA adakan.</p>
+            </div>
+            <div>
+              <button class="btn btn-primary floatleft"  onclick="back(12)">Sebelumnya</button>
+              <button class="btn btn-primary floatright"  onclick="next(12)">Selanjutnya</button>
+            </div><br><br>
+          </div>
+
+          <div class="tab-pane" id="tab_13">
+            <div align="center" style="font-size: 17px;color: #A9A9A9;">PASAL 12</div>
+            <div align="center" style="font-size: 20px;color: #3c8dbc;padding-bottom: 10px;">LEGAL</div>
+            <div class="contentpane">
+              <ol type="1">
+                <li>Setiap klausul dalam perjanjian ini dan klausul dalam perjanjian ini secara keseluruhan akan mempunyai kekuatan hukum yang mengikat secara penuh terhadap pihak pewaris, eksekutor, administrator dan perwakilan hukum lainnya dari pihak PIHAK KEDUA. Hal tersebut dimaksudkan bagi keutuhan penjagaan kepentingan PIHAK PERTAMA, para pengganti yang akan menduduki jabatan penting di PIHAK PERTAMA dan bagi orang-orang atau lembaga-lembaga atau bentuk entitas lainnya yang ditunjuk oleh PIHAK PERTAMA.</li>
+                <li>PIHAK KEDUA menyatakan bahwa PIHAK KEDUA cakap menurut hukum dan berhak untuk menjadi pihak dalam perjanjian ini.</li>
+                <li>Setiap klausul dalam perjanjian ini adalah terpisah dan berdiri sendiri. Apabila ada klausul yang dinyatakan tidak berlaku atau tidak dapat dilaksanakan menurut hukum yang berlaku, maka klausul-klausul lainnya tidak akan terpengaruh dan klausul yang dinyatakan tidak berlaku atau tidak dapat dilaksanakan menurut hukum akan diubah agar menjadi sah dan dapat dilaksanakan semaksimal mungkin menurut hukum.</li>
+                <li>Perjanjian ini dibuat dan berlaku berdasarkan hukum yang berlaku di Republik Indonesia.</li>
+                <li>PIHAK KEDUA menyatakan bahwa:</li>
+                <ol type="a">
+                  <li>PIHAK KEDUA telah membaca, mengerti dan bersedia untuk melaksanakan sepenuhnya perjanjian ini.</li>
+                  <li>PIHAK KEDUA telah diberikan kesempatan untuk meminta keterangan dan penjelasan lebih lanjut tentang hal-hal yang kurang di mengerti dari perjanjian ini.</li>
+                  <li>Perjanjian ini dibuat dalam 2 (dua) rangkap dan dibubuhi meterai secukupnya, yang mana masing-masing perjanjian mempunyai kekuatan hukum yang sama.</li>
+                </ol>
+                <p>Kewajiban-kewajiban PIHAK KEDUA dalam perjanjian ini tetap berlaku secara penuh terhadap PIHAK KEDUA, walaupun PIHAK KEDUA sudah tidak bekerja pada PIHAK PERTAMA dengan alasan apapun juga.</p>
+              </ol>
+            </div>
+            <div>
+              <button class="btn btn-primary floatleft"  onclick="back(13)">Sebelumnya</button>
+              <button class="btn btn-primary floatright"  onclick="next(13)">Selanjutnya</button>
+            </div><br><br>
+          </div>
+
+          <div class="tab-pane" id="tab_14">
+            <div align="center" style="font-size: 17px;color: #A9A9A9;">PASAL 13</div>
+            <div align="center" style="font-size: 20px;color: #3c8dbc;padding-bottom: 10px;">PENUTUP</div>
+            <div class="contentpane">
+              <p>Dengan menandatangani perjanjian ini PIHAK KEDUA dapat memahami dan menyetujui seluruh hal yang tercantum di atas. Perjanjian kontrak ini akan diperpanjang setiap tahunnya dan PIHAK PERTAMA dapat mengubah atau menambah syarat dan ketentuan untuk, sebagai contoh, mencerminkan kebijakan baru dari perusahaan PIHAK PERTAMA. Bila ada syarat dan ketentuan yang berubah, PIHAK PERTAMA akan menginformasikannya langsung kepada PIHAK KEDUA.</p>
+              <p>Perjanjian ini ditandatangani oleh kedua belah pihak tanpa tekanan dari pihak manapun juga pada hari dan tanggal {{if .Join}} {{.Join}} {{else}} <b><script> document.write(new Date().toLocaleDateString('en-GB')); </script></b> {{end}}</p>
+            </div>
+            <div>
+              <button class="btn btn-primary floatleft" onclick="back(14)">Sebelumnya</button>
+              {{if .Join}}
+              <button class="btn btn-primary floatright" onclick="finish()">Halaman Awal</button>
+              {{else}}
+              <button class="btn btn-primary floatright" onclick="finish()">Saya Telah Membaca dan Menyetujui Perjanjian Ini</button>
+              {{end}}
+            </div><br><br>
+          </div>
+          <!-- /.tab-content -->
+        </div>
+        <!-- nav-tabs-custom -->
+      </div>
+      <!-- /.col -->
+    </div>
+  </section>
+
+  <section class="content" id="content_standard" style="display: none;">
+    <div class="col-md-12">
+      <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs">
+          <li><a href="#tab_21" data-toggle="tab" id="tab21"  class="active">*</a></li>
+          <li><a href="#tab_22" data-toggle="tab" class="disabled" id="tab22">Pasal 1</a></li>
+          <li><a href="#tab_23" data-toggle="tab" class="disabled" id="tab23">Pasal 2</a></li>
+          <li><a href="#tab_24" data-toggle="tab" class="disabled" id="tab24">Pasal 3</a></li>
+          <li><a href="#tab_25" data-toggle="tab" class="disabled" id="tab25">Pasal 4</a></li>
+          <li><a href="#tab_26" data-toggle="tab" class="disabled" id="tab26">Pasal 5</a></li>
+          <li><a href="#tab_27" data-toggle="tab" class="disabled" id="tab27">Pasal 6</a></li>
+          <li><a href="#tab_28" data-toggle="tab" class="disabled" id="tab28">Pasal 7</a></li>
+          <li><a href="#tab_29" data-toggle="tab" class="disabled" id="tab29">Pasal 8</a></li>
+          <li><a href="#tab_30" data-toggle="tab" class="disabled" id="tab30">Pasal 9</a></li>
+          <li><a href="#tab_31" data-toggle="tab" class="disabled" id="tab31">Pasal 10</a></li>
+          <li><a href="#tab_32" data-toggle="tab" class="disabled" id="tab32">Pasal 11</a></li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="tab_21" >
+            <div class="contentpane">
+              <p>Yang bertanda tangan di bawah ini:</p>
+              <table style="text-align: left; padding: 8px; margin-left: 2%;">
+                <tr>
+                  <td><b>Nama</b> &nbsp &nbsp</td>
+                  <td>:</td>
+                  <td> &nbsp &nbsp {{.NamaSIP}}</td>
+                </tr>
+                <tr>
+                  <td><b>Jabatan</b> &nbsp &nbsp</td>
+                  <td>:</td>
+                  <td>&nbsp &nbsp {{.JabatanSIP}}</td>
+                </tr>
+                <tr>
+                  <td><b>Alamat</b> &nbsp &nbsp</td>
+                  <td>:</td>
+                  <td>&nbsp &nbsp {{.AlamatSIP}}</td>
+                </tr>
+              </table>
+              <p> Dalam hal ini bertindak sebagai wakil dari <b>PT. Sinar Inti Panel</b> dan untuk selanjutnya disebut <b>Pihak Pertama</b>. </p>
+              <table style="text-align: left; padding: 8px; margin-left: 2%;">
+                <tr>
+                  <td><b>Nama</b> &nbsp &nbsp</td>
+                  <td>:</td>
+                  <td> &nbsp &nbsp {{.NamaCustomer}}</td>
+                </tr>
+                <tr>
+                  <td><b>Jabatan</b> &nbsp &nbsp</td>
+                  <td>:</td>
+                  <td>&nbsp &nbsp {{.JabatanCustomer}}</td>
+                </tr>
+                <tr>
+                  <td><b>Alamat</b> &nbsp &nbsp</td>
+                  <td>:</td>
+                  <td>&nbsp &nbsp {{.AlamatCustomer}}</td>
+                </tr>
+                <input type="hidden" name="csrf" id="csrf" value="{{.CSRF}}">
+              </table>
+              <p>Dalam hal ini bertindak sebagai wakil dari <b>{{.NamaPerusahaanCustomer}}</b> dan untuk selanjutnya disebut <b>Pihak Kedua</b>.</p>
+              <br>
+              <p> Bersama ini PIHAK KEDUA mengerti, setuju dan bersedia menurut hukum untuk mengikatkan diri dengan ketentuan-ketentuan sebagai berikut:</p>
+            </div>
+            <div >
+              <button class="btn btn-primary floatleft"  onclick="back(1)">Pilih Tipe</button>
+              <button class="btn btn-primary floatright"  onclick="next(21)">Selanjutnya</button>
+            </div><br><br>
+          </div>
+
+
+          <div class="tab-pane" id="tab_22">
+            <div align="center" style="font-size: 17px;color: #A9A9A9;">PASAL 1</div>
+            <div align="center" style="font-size: 20px;color: #3c8dbc;padding-bottom: 10px;">BENTUK KERJA SAMA</div>
+            <div class="contentpane">
+              <p>Selama mengikuti program ini PIHAK KEDUA <b>tidak diperkenankan</b> untuk menjual produk sandwich panel dari perusahaan lain selain PT. Sinar Inti Panel tanpa seijin PIHAK PERTAMA.<br>
+              Untuk setiap proyek PIHAK KEDUA diberikan beberapa pilihan bentuk kerja sama. Pilihan ini hanya berlaku per masing-masing proyek saja. Jadi bila PIHAK KEDUA memilih satu bentuk kerja sama untuk satu proyek, proyek lain tidak harus mengikuti bentuk kerja sama yang sama. Berikut adalah bentuk kerja sama yang PIHAK PERTAMA tawarkan:</p>
+              <ol>
+                <li><b>Jual Beli Barang</b></li>
+                <p>Dalam bentuk kerja sama ini PIHAK KEDUA hanya berlaku sebagai pembeli produk PIHAK PERTAMA. Artinya, proses instalasi akan dilakukan oleh PIHAK KEDUA tanpa campur tangan dari PIHAK PERTAMA. Harga jual PIHAK KEDUA kepada customer adalah sepenuhnya hak PIHAK KEDUA. Gambar, Material breakdown dan estimasi harga tidak akan dibantu oleh PIHAK PERTAMA.</p>
+                <li><b>Referensi Dari Pihak Pertama</b></li>
+                <p>Dalam bentuk kerja sama ini PIHAK KEDUA berlaku sebagai perpanjangan tangan dari PIHAK PERTAMA namun membawa nama PIHAK KEDUA atau perusahaan PIHAK KEDUA. Sebelumnya PIHAK PERTAMA akan menawarkan atau memberikan referensi kepada PIHAK KEDUA untuk mengerjakan sebuah proyek dan ketika PIHAK KEDUA setuju untuk mengerjakan proyek ini, proses instalasi akan dilakukan oleh PIHAK KEDUA dengan supervisi dari tim PIHAK PERTAMA untuk menjaga kualitas instalasinya. Dalam bentuk kerja sama ini, PIHAK KEDUA juga akan dikenakan biaya supervisi sebesar 5% dari total harga materi yang dibeli dari PIHAK PERTAMA. Harga jual PIHAK KEDUA kepada customer harus sesuai arahan PIHAK PERTAMA. Gambar, Material breakdown dan estimasi harga akan dibantu oleh PIHAK PERTAMA.</p>
+                <li><b>Sub-kon Instalasi</b></li>
+                <p>Dalam bentuk kerja sama ini PIHAK KEDUA hanya menyediakan jasa instalasi saja dan memberikan penawaran jasa tersebut kepada PIHAK PERTAMA sesuai dengan standar pengajuan penawaran / tender PIHAK PERTAMA. Proses perancangan dan material breakdown akan dilakukan oleh tim PIHAK PERTAMA.</p>
+                <p>Perlu diperhatikan bahwa:</p>
+                <ul>
+                  <li>Bantuan pembuatan approval drawing yang diberikan PIHAK PERTAMA hanya terbatas kepada gambar dan hitungan dalam lingkup sandwich panel dan akan dilakukan sesuai standar PIHAK PERTAMA</li>
+                  <li>Bantuan administrasi dan QC lapangan yg diberikan PIHAK PERTAMA hanya terbatas dalam lingkup pekerjaan sandwich panel, dan bantuan tersebut dilakukan sesuai standar PIHAK PERTAMA.</li>
+                  <li>PIHAK KEDUA wajib mempunyai Project Coordinator sendiri, dan mencari orang-orang harian sendiri<./li>
+                  </ul>
+                </ol>
+              </div>
+              <div>
+                <button class="btn btn-primary floatleft"  onclick="back(22)">Sebelumnya</button>
+                <button class="btn btn-primary floatright"  onclick="next(22)">Selanjutnya</button>
+              </div><br><br>
+            </div>
+
+            <div class="tab-pane" id="tab_23">
+              <div align="center" style="font-size: 17px;color: #A9A9A9;">PASAL 2</div>
+              <div align="center" style="font-size: 20px;color: #3c8dbc;padding-bottom: 10px;">PEMBAGIAN WILAYAH</div>
+              <div class="contentpane">
+                <p>Dalam mengikuti program distribusi ini, PIHAK KEDUA berhak untuk memegang satu atau beberapa wilayah distribusi. Jadi bila PIHAK KEDUA memegang suatu wilayah dan ada distributor PIHAK PERTAMA dari wilayah lain yang mengincar proyek yang sama yang ada di wilayah PIHAK KEDUA, maka PIHAK PERTAMA akan memberikan proyek tersebut kepada PIHAK KEDUA. Sebaliknya, bila PIHAK KEDUA yang memegang suatu wilayah dan mengincar proyek di wilayah lain yang sama dengan distributor PIHAK PERTAMA yang memegang wilayah tersebut, PIHAK PERTAMA akan memberikannya kepada distributor PIHAK PERTAMA di wilayah tersebut. Namun PIHAK KEDUA diperkenankan untuk mengincar suatu proyek di wilayah yang bukan kekuasaan PIHAK KEDUA ketika distributor yang berkuasa di wilayah tersebut tidak mengincarnya.</p>
+              </div>
+              <div>
+                <button class="btn btn-primary floatleft"  onclick="back(23)">Sebelumnya</button>
+                <button class="btn btn-primary floatright"  onclick="next(23)">Selanjutnya</button>
+              </div><br><br>
+            </div>
+
+            <div class="tab-pane" id="tab_24">
+              <div align="center" style="font-size: 17px;color: #A9A9A9;">PASAL 3</div>
+              <div align="center" style="font-size: 20px;color: #3c8dbc;padding-bottom: 10px;">PEMESANAN PRODUK</div>
+              <div class="contentpane">
+                <p>Dalam proses pemesanan produk PIHAK KEDUA wajib mengikuti prosedur yang telah PIHAK PERTAMA ajukan dengan langkah sebagai berikut:</p>
+                <ol>
+                  <li>Dalam pemesanan pembelian PIHAK KEDUA perlu untuk mengisi form purchase order online yang PIHAK PERTAMA sediakan.</li>
+                  <li>PIHAK KEDUA harus memastikan bahwa customer setuju dan menandatangi <i>approval drawing</i> tersebut.</li>
+                  <li><i>Delivery</i> barang akan dilakukan dalam waktu yang telah ditentukan di penawaran.</li>
+                  <li>Setelah barang sampai di tangan PIHAK KEDUA, PIHAK KEDUA wajib untuk memeriksa jumlah dan kualitas barang dan memastikan bahwa semua barang sesuai dengan pesanan yang PIHAK KEDUA telah lakukan ketika PIHAK KEDUA mengambil barang atau ketika <i>Delivery Truck</i> sampai di lokasi. PIHAK KEDUA perlu menandatangani form <i>Quality Control</i> dan serah terima barang.</li>
+                </ol>
+              </div>
+              <div>
+                <button class="btn btn-primary floatleft"  onclick="back(24)">Sebelumnya</button>
+                <button class="btn btn-primary floatright"  onclick="next(24)">Selanjutnya</button>
+              </div><br><br>
+            </div>
+
+            <div class="tab-pane" id="tab_25">
+              <div align="center" style="font-size: 17px;color: #A9A9A9;">PASAL 4</div>
+              <div align="center" style="font-size: 20px;color: #3c8dbc;padding-bottom: 10px;">KEUNTUNGAN</div>
+              <div class="contentpane">
+                <p>Keuntungan yang PIHAK KEDUA peroleh dengan mengikuti program distributor ini adalah sebagai berikut:</p>
+                <ol>
+                  <li><b>Kesempatan Berwirausaha</b></li>
+                  <p>Kami memiliki visi untuk mensejahterakan semua distributor PIHAK PERTAMA. Karena itu PIHAK PERTAMA akan terus memberi dukungan dan dorongan untuk membuat bisnis PIHAK KEDUA lebih maju. Kami akan membantu PIHAK KEDUA untuk meraih prestasi sebagai wiraswasta dengan memberikan berbagai macam management support dan edukasi bisnis.</p>
+                  <li><b>Harga Spesial</b></li>
+                  <p>Dengan menjadi distributor PIHAK PERTAMA, PIHAK KEDUA akan memperoleh harga spesial dari PIHAK PERTAMA harga ini hanya berlaku untuk PIHAK KEDUA saja. PIHAK KEDUA tidak diperkenankan menyebarluaskan harga ini.</p>
+                  <li><b>Kemudahan Bisnis (jika PIHAK KEDUA menghendaki)</b></li>
+                  <p>Sebagai distributor PIHAK PERTAMA, tim PIHAK PERTAMA akan siap sedia membantu PIHAK KEDUA dalam mendukung PIHAK KEDUA mencapai hasil yang baik di mata konsumen. Kami akan menyediakan tim support secara khusus untuk membantu PIHAK KEDUA dalam bagian administrasi, engineering, dan QC lapangan. Jadi PIHAK KEDUA tidak perlu untuk merekrut tenaga ahli untuk tugas-tugas tersebut.</p><p>Perlu diperhatikan bahwa:</p>
+                  <ol type="a">
+                    <li>Bantuan pembuatan approval drawing yang diberikan PIHAK PERTAMA hanya terbatas kepada gambar dan hitungan dalam lingkup sandwich panel dan akan dilakukan sesuai standar PIHAK PERTAMA</li>
+                    <li>Bantuan administrasi dan QC lapangan yg diberikan PIHAK PERTAMA hanya terbatas dalam lingkup pekerjaan sandwich panel, dan bantuan tersebut dilakukan sesuai standar PIHAK PERTAMA.</li>
+                    <li>PIHAK KEDUA wajib mempunyai Project Coordinator sendiri, dan mencari orang-orang harian sendiri</li>
+                    <br>
+                  </ol>
+                  <li><b>Referensi Proyek Panel</b></li>
+                  <p>Kami memiliki banyak prospek dalam proyek-proyek di berbagai wilayah di Indonesia. PIHAK KEDUA sebagai distributor di suatu wilayah akan direferensikan kepada proyek tersebut di mana PIHAK KEDUA dapat mengambil bagian dalam proses pengadaan dan instalasi proyek ini.</p>
+                  <li><b>Referensi Proyek Lain</b></li>
+                  <p>Selain daripada proyek panel, PIHAK PERTAMA memiliki banyak koneksi ke berbagai bisnis dan proyek lain. Bila PIHAK KEDUA juga memiliki bisnis lain di luar sandwich panel dan PIHAK KEDUA membuktikan bahwa kinerja PIHAK KEDUA baik. Kami juga akan membantu mereferensikan PIHAK KEDUA kepada proyek-proyek pembangunan lainnya (Contoh: Sipil, ME, HVAC, Epoxy, Water Treatment, dll).</p>
+                </ol>
+              </div>
+              <div>
+                <button class="btn btn-primary floatleft"  onclick="back(25)">Sebelumnya</button>
+                <button class="btn btn-primary floatright"  onclick="next(25)">Selanjutnya</button>
+              </div><br><br>
+            </div>
+
+            <div class="tab-pane" id="tab_26">
+              <div align="center" style="font-size: 17px;color: #A9A9A9;">PASAL 5</div>
+              <div align="center" style="font-size: 20px;color: #3c8dbc;padding-bottom: 10px;">TARGET PENCAPAIAN</div>
+              <div class="contentpane">
+                <p>Karena PIHAK KEDUA akan dipercaya untuk memegang suatu wilayah, maka PIHAK KEDUA akan diberikan target yang PIHAK PERTAMA tentukan yang harus PIHAK KEDUA capai sebagai distributor PIHAK PERTAMA. Target di tahun ini PIHAK KEDUA harus mencapai total penjualan minimal sebesar Rp. 500.000.000,00. Bila PIHAK KEDUA tidak mencapai target ini, maka PIHAK PERTAMA berhak untuk memberhentikan PIHAK KEDUA sebagai distributor resmi PIHAK PERTAMA.</p>
+                <p>Pihak Sinar Inti Panel berhak untuk memberikan kenaikan target tahunan dengan batas persentasi.</p>
+                <ol type="A">
+                  <li><b>PENGHARGAAN</b></li>
+                  <p>Bila PIHAK KEDUA memiliki kinerja yang baik dan mencapai hasil yang baik PIHAK PERTAMA akan memberikan PIHAK KEDUA penghargaan berupa:</p>
+                  <ol type="1">
+                    <li><b>Cashback</b></li>
+                    <p>PIHAK PERTAMA menyediakan cash back tahunan dengan untuk pencapaian sebagai berikut:</p>
+                    <ul>
+                      <li>Bila PIHAK KEDUA mencapai target 1,5 milyar maka pendapatan PIHAK KEDUA dari Rp. 0 sampai Rp. 1.500.000.000 akan dikenakan tarif cash back sebesar 2%.</li>
+                      <li>Bila PIHAK KEDUA mencapai target 2 milyar maka pendapatan PIHAK KEDUA dari Rp. 1.500.000.001 sampai Rp. 2.000.000.000 akan dikenakan tarif cash back sebesar 3%. Sedangkan pendapatan PIHAK KEDUA dari Rp 0 sampai Rp. 1.500.000.000 tetap hanya dikenakan tarif cash back sebesar 2%.</li>
+                      <li>Bila PIHAK KEDUA mencapai target 2.5 milyar maka pendapatan PIHAK KEDUA dari Rp. 2.000.000.001 sampai seterusnya akan dikenakan tarif cash back sebesar 5%. Sedangkan pendapatan PIHAK KEDUA dari Rp 1.500.000.001 sampai Rp. 2.000.000.000 milyar tetap hanya dikenakan tarif cash back sebesar 3%., dan pendapatan PIHAK KEDUA dari Rp 0 sampai Rp. 1.500.000.000 tetap hanya dikenakan tarif cash back sebesar 2%.</li>
+                    </ul>
+                    <p>Cash back ini akan ditransfer kepada rekening PIHAK KEDUA paling lambat 3 bulan setelah akhir tahun membership distributor (terhitung 365 hari dari tanggal pertama PIHAK KEDUA resmi disetujui sebagai distributor).</p>
+                    <li><b>Hadiah</b></li>
+                    <p>Untuk pencapaian target sampai 2,5 milyar dari PIHAK PERTAMA PIHAK KEDUA juga akan mendapatkan dapat bonus hadiah berupa Gadgets, Home Electronics, maupun Office Supplies. Pemberian hadiah ini dapat beragam setiap tahunnya. PIHAK KEDUA tidak dapat memilih hadiah yang akan diberikan, kecuali PIHAK PERTAMA memberikan pilihan tersebut.</p>
+                    <li><b>Sticker Dengan Nama Perusahaan Pihak Kedua</b></li>
+                    <p>Bila PIHAK KEDUA mencapai target sampai 1,2 milyar PIHAK KEDUA juga diperkenankan untuk mencantumkan nama dan logo perusahaan PIHAK KEDUA pada plastic cover panel yang PIHAK PERTAMA produksi. PIHAK PERTAMA berhak untuk membatalkan pemakaian logo perusahaan ini bila PIHAK KEDUA tidak mencapai target 1,2 milyar di tahun berikutnya.</p>
+                  </ol>
+                </ol>
+              </div>
+              <div>
+                <button class="btn btn-primary floatleft"  onclick="back(26)">Sebelumnya</button>
+                <button class="btn btn-primary floatright"  onclick="next(26)">Selanjutnya</button>
+              </div><br><br>
+            </div>
+
+            <div class="tab-pane" id="tab_27">
+              <div align="center" style="font-size: 17px;color: #A9A9A9;">PASAL 6</div>
+              <div align="center" style="font-size: 20px;color: #3c8dbc;padding-bottom: 10px;">FASILITAS PENUNJANG</div>
+              <div class="contentpane">
+                <p>Beberapa fasilitas penunjang yang akan PIHAK KEDUA peroleh adalah sebagai berikut:</p>
+                <ol>
+                  <li><b>Perlengkapan Marketing</b></li>
+                  <p>PIHAK KEDUA akan diperlengkapi dengan perlengkapan marketing dari PIHAK PERTAMA, seperti brosur, sample produk panel dan ekstrusi, mock up ruangan dan lain sebagainya.</p>
+                  <li><b>Harga Spesial</b></li>
+                  <p>PIHAK KEDUA akan mendapatkan harga khusus dari PIHAK PERTAMA yang lebih murah dari yang seharusnya sehingga PIHAK KEDUA dapat memperoleh keuntungan dari penjualan PIHAK KEDUA. Namun PIHAK KEDUA tidak diperkenankan untuk menyebarluaskan harga yang PIHAK KEDUA peroleh ini.</p>
+                  <li><b>Pelatihan Teknis</b></li>
+                  <p>Kami akan memberikan PIHAK KEDUA beserta tim PIHAK KEDUA pelatihan pengaplikasian panel. PIHAK KEDUA wajib untuk menghadiri pelatihan teknis tersebut.</p>
+                  <li><b>Edukasi Bisnis</b></li>
+                  <p>Kami juga akan memberikan PIHAK KEDUA beserta tim PIHAK KEDUA pelatihan management, marketing dan akunting.</p>
+                </ol>
+              </div>
+              <div>
+                <button class="btn btn-primary floatleft"  onclick="back(27)">Sebelumnya</button>
+                <button class="btn btn-primary floatright"  onclick="next(27)">Selanjutnya</button>
+              </div><br><br>
+            </div>
+
+            <div class="tab-pane" id="tab_28">
+              <div align="center" style="font-size: 17px;color: #A9A9A9;">PASAL 7</div>
+              <div align="center" style="font-size: 20px;color: #3c8dbc;padding-bottom: 10px;">SANKSI</div>
+              <div class="contentpane">
+                <p>Kami berhak memberi PIHAK KEDUA sanksi bila:</p>
+                <ol>
+                  <li>Kualitas pekerjaan PIHAK KEDUA buruk.</li>
+                  <li>PIHAK KEDUA terlambat mengerjakan suatu proyek sampai keluar dari waktu yang telah dijanjikan kepada konsumen.</li>
+                  <li>PIHAK KEDUA membeli produk sandwich panel atau komponennya dari perusahaan lain tanpa persetujuan dari PIHAK PERTAMA.</li>
+                  <li>PIHAK KEDUA membeberkan rahasia perusahaan PIHAK PERTAMA atau PIHAK KEDUA mengungkapkan harga yang PIHAK PERTAMA telah berikan khusus untuk PIHAK KEDUA.</li>
+                  <li>PIHAK KEDUA tidak dapat mengikuti etika komunikasi dan tata krama umum ketika berkomunikasi dengan PIHAK PERTAMA atau dengan customer.</li>
+                  <li>PIHAK KEDUA terlambat dalam melakukan pembayaran.</li>
+                </ol>
+                <p>Sanksi yang PIHAK KEDUA dapatkan dapat berupa:</p>
+                <ul style="margin-left: 2%">
+                  <li><b>Penurunan Peringkat</b></li>
+                  <p>Keuntungan-keuntungan yang PIHAK KEDUA peroleh dari pencapaian PIHAK KEDUA dapat dicabut ketika PIHAK KEDUA terus melanggar aturan yang PIHAK PERTAMA berikan.</p>
+                  <li><b>Blacklist</b></li>
+                  <p>Bila PIHAK KEDUA sudah diberikan peringatan dan sanksi yang tegas namun PIHAK KEDUA masih saja melakukan pelanggaran, maka PIHAK PERTAMA terpaksa harus menghentikan PIHAK KEDUA dari program distribusi ini selamanya. Dan nama PIHAK KEDUA akan diumumkan di daftar blacklist PIHAK PERTAMA untuk diinformasikan kepada konsumen PIHAK PERTAMA dan distributor lain bahwa PIHAK PERTAMA sudah tidak berhubungan dengan PIHAK KEDUA lagi. Daftar blacklist akan dipublikasikan secara luas di website PIHAK PERTAMA.</p>
+                  <p><p>PERTAMA sudah tidak berhubungan dengan PIHAK KEDUA lagi. Daftar blacklist akan dipublikasikan secara luas di website PIHAK PERTAMA.</p></p>
+                  <li><b>Tuntutan Pidana</b></li>
+                  <p>Apabila PIHAK KEDUA melakukan tindakan-tindakan yang merugikan PIHAK PERTAMA dan tindakan-tidakan tersebut memasuki kategori pidana dalam undang-undang dasar Republik Indonesia, maka PIHAK PERTAMA berhak menempuh jalur hukum dan melibatkan pihak berwenang.</p>
+                  <li><b>Pemutusan Kerja Sama</b></li>
+                  <p>PIHAK PERTAMA berhak secara sepihak memutuskan kerja sama dengan PIHAK KEDUA apabila PIHAK KEDUA tidak bersedia mengikuti pelatihan yang diselenggarakan oleh PIHAK PERTAMA.</p>
+                </ul>
+              </div>
+              <div>
+                <button class="btn btn-primary floatleft"  onclick="back(28)">Sebelumnya</button>
+                <button class="btn btn-primary floatright"  onclick="next(28)">Selanjutnya</button>
+              </div><br><br>
+            </div>
+
+            <div class="tab-pane" id="tab_29">
+              <div align="center" style="font-size: 17px;color: #A9A9A9;">PASAL 8</div>
+              <div align="center" style="font-size: 20px;color: #3c8dbc;padding-bottom: 10px;">MASALAH</div>
+              <div class="contentpane">
+                <p>Bila terjadi masalah atau perselisihan dengan PIHAK PERTAMA atau distributor yang lain PIHAK KEDUA wajib mengajukan surat komplain secara formal. PIHAK KEDUA dapat mengajukannya <a href="www.sinarintipanel.com">di sini</a>.</p>
+                <p>Bila perselisihan tidak kunjung selesai maka tim dari PIHAK PERTAMA akan secara langsung bertemu dengan PIHAK KEDUA untuk menyelesaikan masalah ini.</p>
+              </div>
+              <div>
+                <button class="btn btn-primary floatleft"  onclick="back(29)">Sebelumnya</button>
+                <button class="btn btn-primary floatright"  onclick="next(29)">Selanjutnya</button>
+              </div><br><br>
+            </div>
+
+            <div class="tab-pane" id="tab_30">
+              <div align="center" style="font-size: 17px;color: #A9A9A9;">PASAL 9</div>
+              <div align="center" style="font-size: 20px;color: #3c8dbc;padding-bottom: 10px;">ACARA WAJIB</div>
+              <div class="contentpane">
+                <p>Kami akan mengadakan acara rutin (gathering) yang bertujuan untuk:</p>
+                <ol>
+                  <li>Memberi informasi seputar program distribusi</li>
+                  <li>Pengenalan produk Sinar Inti Panel dan pelatihan teknis.</li>
+                  <li>Seminar seputar bisnis dan marketing</li>
+                </ol>
+                <p>Sebagai distributor PIHAK PERTAMA. PIHAK KEDUA diwajibkan untuk mengikuti acara-acara tersebut yang akan PIHAK PERTAMA adakan.</p>
+              </div>
+              <div>
+                <button class="btn btn-primary floatleft"  onclick="back(30)">Sebelumnya</button>
+                <button class="btn btn-primary floatright"  onclick="next(30)">Selanjutnya</button>
+              </div><br><br>
+            </div>
+
+            <div class="tab-pane" id="tab_31">
+              <div align="center" style="font-size: 17px;color: #A9A9A9;">PASAL 10</div>
+              <div align="center" style="font-size: 20px;color: #3c8dbc;padding-bottom: 10px;">LEGAL</div>
+              <div class="contentpane">
+                <ol type="1">
+                  <li>Setiap klausul dalam perjanjian ini dan klausul dalam perjanjian ini secara keseluruhan akan mempunyai kekuatan hukum yang mengikat secara penuh terhadap pihak pewaris, eksekutor, administrator dan perwakilan hukum lainnya dari pihak PIHAK KEDUA. Hal tersebut dimaksudkan bagi keutuhan penjagaan kepentingan PIHAK PERTAMA, para pengganti yang akan menduduki jabatan penting di PIHAK PERTAMA dan bagi orang-orang atau lembaga-lembaga atau bentuk entitas lainnya yang ditunjuk oleh PIHAK PERTAMA.</li>
+                  <li>PIHAK KEDUA menyatakan bahwa PIHAK KEDUA cakap menurut hukum dan berhak untuk menjadi pihak dalam perjanjian ini.</li>
+                  <li>Setiap klausul dalam perjanjian ini adalah terpisah dan berdiri sendiri. Apabila ada klausul yang dinyatakan tidak berlaku atau tidak dapat dilaksanakan menurut hukum yang berlaku, maka klausul-klausul lainnya tidak akan terpengaruh dan klausul yang dinyatakan tidak berlaku atau tidak dapat dilaksanakan menurut hukum akan diubah agar menjadi sah dan dapat dilaksanakan semaksimal mungkin menurut hukum.</li>
+                  <li>Perjanjian ini dibuat dan berlaku berdasarkan hukum yang berlaku di Republik Indonesia.</li>
+                  <li>PIHAK KEDUA menyatakan bahwa:</li>
+                  <ol type="a">
+                    <li>PIHAK KEDUA telah membaca, mengerti dan bersedia untuk melaksanakan sepenuhnya perjanjian ini.</li>
+                    <li>PIHAK KEDUA telah diberikan kesempatan untuk meminta keterangan dan penjelasan lebih lanjut tentang hal-hal yang kurang di mengerti dari perjanjian ini.</li>
+                    <li>Perjanjian ini dibuat dalam 2 (dua) rangkap dan dibubuhi meterai secukupnya, yang mana masing-masing perjanjian mempunyai kekuatan hukum yang sama.</li>
+                  </ol>
+                  <p>Kewajiban-kewajiban PIHAK KEDUA dalam perjanjian ini tetap berlaku secara penuh terhadap PIHAK KEDUA, walaupun PIHAK KEDUA sudah tidak bekerja pada PIHAK PERTAMA dengan alasan apapun juga.</p>
+                </ol>
+              </div>
+              <div>
+                <button class="btn btn-primary floatleft"  onclick="back(31)">Sebelumnya</button>
+                <button class="btn btn-primary floatright"  onclick="next(31)">Selanjutnya</button>
+              </div><br><br>
+            </div>
+
+            <div class="tab-pane" id="tab_32">
+              <div align="center" style="font-size: 17px;color: #A9A9A9;">PASAL 11</div>
+              <div align="center" style="font-size: 20px;color: #3c8dbc;padding-bottom: 10px;">PENUTUP</div>
+              <div class="contentpane">
+                <p>Dengan menandatangani perjanjian ini PIHAK KEDUA dapat memahami dan menyetujui seluruh hal yang tercantum di atas. Perjanjian kontrak ini akan diperpanjang setiap tahunnya dan PIHAK PERTAMA dapat mengubah atau menambah syarat dan ketentuan untuk, sebagai contoh, mencerminkan kebijakan baru dari perusahaan PIHAK PERTAMA. Bila ada syarat dan ketentuan yang berubah, PIHAK PERTAMA akan menginformasikannya langsung kepada PIHAK KEDUA.</p>
+                <p>Perjanjian ini ditandatangani oleh kedua belah pihak tanpa tekanan dari pihak manapun juga pada hari dan tanggal {{if .Join}} {{.Join}} {{else}} <b><script> document.write(new Date().toLocaleDateString('en-GB')); </script></b> {{end}}</p>
+              </div>
+              <div>
+                <button class="btn btn-primary floatleft" onclick="back(32)">Sebelumnya</button>
+                {{if .Join}}
+                <button class="btn btn-primary floatright" onclick="finish()">Halaman Awal</button>
+                {{else}}
+                <button class="btn btn-primary floatright" onclick="finish()">Saya Telah Membaca dan Menyetujui Perjanjian Ini</button>
+                {{end}}
+              </div><br><br>
+            </div>
+            <!-- /.tab-content -->
+          </div>
+          <!-- nav-tabs-custom -->
+        </div>
+        <!-- /.col -->
+      </div>
+    </section>
+    {{end}}

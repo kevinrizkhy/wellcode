@@ -1,0 +1,108 @@
+{{define "content"}}
+<link rel="stylesheet" href="{{.BaseURL}}assets/css/bower_components/bootstrap/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="{{.BaseURL}}assets/css/bower_components/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="{{.BaseURL}}assets/css/bower_components/morris.js/morris.css">
+<link rel="stylesheet" href="{{.BaseURL}}assets/dist/css/AdminLTE.min.css">
+<link rel="stylesheet" href="{{.BaseURL}}assets/css/bower_components/select2/dist/css/select2.min.css">
+<link rel="stylesheet" href="{{.BaseURL}}assets/css/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+<link rel="stylesheet" href="{{.BaseURL}}assets/dist/css/skins/_all-skins.min.css">
+<script src="{{.BaseURL}}assets/css/bower_components/raphael/raphael.min.js"></script>
+<script src="{{.BaseURL}}assets/css/bower_components/morris.js/morris.min.js"></script>
+<script src="{{.BaseURL}}assets/css/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="{{.BaseURL}}assets/css/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<link rel='stylesheet prefetch' href='https://fonts.googleapis.com/icon?family=Material+Icons'>
+<script src="{{.BaseURL}}assets/css/bower_components/select2/dist/js/select2.full.min.js"></script>
+<script>
+  $(function () {
+    $('.select2').select2()
+  })
+  $( document ).ready(function() {
+    setup();
+  });
+  var results;
+  function setup() {
+    $.ajax({
+      type: "GET",
+      url: "{{.BaseURL}}getJSON/order",
+      success: function(result)
+      {
+        $('#title').html("Daftar Pembelian");
+        document.getElementById("detailButton").style.display="none";
+        $('#example1').DataTable({
+          data: result,
+          destroy: true,
+          responsive: true,
+          columns:[{title:"Nama Proyek"},{title:"Berkas Proyek"},{title:"Status Pembayaran"},{title:"Terbayar"},{title:""}]
+        });
+      }
+    });
+  }
+// function changeType(){
+//   var types = $("#types option:selected").text();
+//   if(types=="Semua"){
+//     types="all";
+//   }else if(types=="Disetujui"){
+//     types="approve";
+//   }else if (types=="Ditolak"){
+//     types="reject";
+//   }else{
+//     types="pending";
+//   }
+//   $.ajax({
+//     type: "GET",
+//     url: "{{.BaseURL}}getJSON/statuseditprofiledistributor/"+types,
+//     success: function(result)
+//     {
+//       $('#title').html("Daftar Pengajuan Perubahan Data Profil");
+//       if(result==null){
+//         var table = $('#example1').DataTable();
+//         table.clear().draw();
+//       }else{
+//         $('#example1').DataTable({
+//           data: result,
+//           destroy: true,
+//           columns:[{title:"ID"},{title:"Tanggal Pengajuan"},{title:"Status"},{title:""}]
+//         });
+//       }
+//     }
+//   });
+// }
+</script>
+<div id="wrapper" class="container" style="padding-top: 0; width: 100%;">
+  <div style="margin: 0 auto; overflow: auto; width: 100%;">
+    <div class="col-md-12"  style="padding: 25px 0 0 0;">
+      <b><h3 class="profile-username text-center" style="font-size: 25px; padding-bottom: 20px;">Daftar Pembelian</h3></b>
+    </div>
+    <div class="form-group">      
+      <div class="col-xs-12" style="display: block; width: 100%;" id="list">
+        <div class="box">
+          <div class="box-body">
+            <table id="example1" class="hover table table-bordered table-striped" width="100%">
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="col-xs-12" style="display: none;" id="history">
+        <div class="box">
+          <div class="box-body" style="margin: 0 auto;">
+            <div id="detailTable"></div>
+          </div>
+        </div>
+      </div>
+      <div id="detailButton" >
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="alert alert-success " style="z-index: 99;position: absolute; top: 0; left: 50%; margin-top: 10px; margin-left: -150px; display: none; width: 300px; text-align: center;" id="alertSuccess">
+  <strong>Berhasil!</strong> Perubahan data telah disimpan.
+</div>
+<div class="alert alert-warning" style="z-index: 99;position: absolute; top: 0; left: 50%; margin-top: 10px; margin-left: -150px; display: none; width: 300px; text-align: center;" id="alertWarning">
+  <strong>Perhatian!</strong><br>Harap memilih Sales untuk Distributor.
+</div>
+<div class="alert alert-danger" style="z-index: 99;position: absolute; top: 0; left: 50%; margin-top: 10px; margin-left: -150px; display: none; width: 300px; text-align: center;" id="alertDanger">
+  <strong>Gagal!</strong> Perubahan data gagal disimpan.
+</div>
+
+{{end}}

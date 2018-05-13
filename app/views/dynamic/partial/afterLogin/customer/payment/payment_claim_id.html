@@ -1,0 +1,44 @@
+{{define "content"}}
+<!DOCTYPE html>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <title>Tambah Penerimaan</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{.BaseURL}}assets/css/william.css">
+</head>
+<body>
+  <div id="JumbotronContent">
+    <div id="wrapper" style="margin: 0 auto;">
+      {{if eq .Role "Distributor"}}
+    <form  enctype="multipart/form-data" id="form-work" class="timeline-block" name="form-work" action="/paymentclaimdistributordata" method="POST">
+      {{else}}
+      <form  enctype="multipart/form-data" id="form-work" class="timeline-block" name="form-work" action="/paymentclaimfinancedata" method="POST">
+        {{end}}
+      <div class="fancy-header" style="width:90% !important">
+        <i class="fa fa-money" aria-hidden="true"></i><br>
+        KLAIM PEMBAYARAN - {{.Number}}
+        <div id="balance">{{.Balance}}</div>
+      </div>
+      <div class="form-group row">
+        <div class="col-md-12">
+          <label for="date_payment">Tanggal</label>
+          <input name="date_payment" id="date-picker-payment" class="form-control" type="date" required>
+          <label for="pay">Nominal</label>
+          <input name="pay" id="pay" class="form-control" type="number" min="1" max="10000000000000" value="{{.Need_pay}}" required>
+          <label for="payment_file">Bukti</label>
+          <input name="payment_file" class="form-control" type="file">
+          <input name="orderId" id="orderID" type="text" style="border: 0 !important; display: none;" value="{{.Order_id}}"required />
+          <div class="buttons">
+            <button class="button button-ok" type="submit">Kirim</button>
+          </div>
+          <!--multipart file here-->
+        </div>
+      </div>
+    </form>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+{{end}}

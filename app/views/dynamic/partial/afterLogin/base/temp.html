@@ -1,0 +1,177 @@
+{{define "content"}}
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="UTF-8">
+    <title>Persetujuan Perubahan Profile Distributor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+    <link rel="stylesheet" href="{{.BaseURL}}assets/css/style-login.css">
+  </head>
+  <body >
+    <div id="wrapper" class="container" style="padding-top: 0;">
+      <div style="margin: 0 auto;">
+        <div class="col-md-12"  style="padding: 2% 0;">
+          <!-- Profile Image -->
+          <img class="profile-user-img img-responsive img-circle" src="{{.BaseURL}}assets/img/user2-160x160.jpg" alt="{{.Name}}">
+          <!-- <h3 class="profile-username text-center">{{.Name}}</h3> -->
+          <p class="text-muted text-center">{{.Role}}</p>
+          <ul class="list-group list-group-unbordered">
+          </ul>
+        </div>
+        <div>
+          <div class="form-group">
+            <div class="row">
+              <table style="height:100% !important; width:100%  !important;">
+                <tr>
+                  <td>
+                     <table style="height:100% !important; width:100%  !important;">
+                      <tr>
+                        <td><b>Data Profil Distributor</b> </td>
+                      </tr>
+                      <tr>
+                        <td><b>Nama</b>  </td>
+                        <td>: {{.Name}}</td>
+                      </tr>
+                      <tr>
+                        <td><b>Nama Perusahaan</b> </td>
+                        <td>: {{.Nama_perusahaan}}</td>
+                      </tr>
+                      <tr>
+                        <td><b>Jabatan</b> </td>
+                        <td>: {{.Jabatan}}</td>
+                      </tr>
+                      <tr>
+                        <td><b>Alamat Perusahaan</b>  </td>
+                        <td>: {{.Alamat_perusahaan}}</td>
+                      </tr>
+                      <tr>
+                        <td><b>Nomor Telepone Perusahaan</b> </td>
+                        <td>: {{.Nomor_telepon_saat}}</td>
+                      </tr>
+                      <tr>
+                        <td><b>Nomor Handphone</b>  </td>
+                        <td>: {{.Nomor_handphone}}</td>
+                      </tr>
+                      <tr>
+                        <td><b>Nomor Kartu Tanda Penduduk</b>  </td>
+                        <td>: {{.Nomor_ktp}}</td>
+                      </tr>
+                      <tr>
+                        <td><b>Tanggal Lahir</b>  </td>
+                        <td>: {{.Birthday}}</td>
+                      </tr>
+                      <tr>
+                        <td><b>Jenis Kelamin</b>  </td>
+                        <td>: {{.Jenis_kelamin}}</td>
+                      </tr>
+                    </table> 
+                  </td>
+                  <td>
+                     <table style="height:100% !important; width:100%  !important;">
+                      <tr>
+                        <td><b>Permintaan Perubahan Data Profil Distributor</b> </td>
+                      </tr>
+                      <tr>
+                        <td><b>Nama</b>  </td>
+                        {{if eq .New_Name .Name}}
+                        <td>: {{.New_Name}}</td>
+                        {{else}}
+                        <td style="font-color:green";>: {{.New_Name}}</td>
+                        {{end}}
+                      </tr>
+                      <tr>
+                        <td><b>Nama Perusahaan</b> </td>
+                        {{if eq .New_Nama_perusahaan .Nama_perusahaan}}
+                        <td>: {{.New_Nama_perusahaan}}</td>
+                        {{else}}
+                        <td style="font-color:green";>: {{.New_Nama_perusahaan}}</td>
+                        {{end}}
+                      </tr>
+                      <tr>
+                        <td><b>Jabatan</b> </td>
+                        {{if eq .New_Jabatan .Jabatan}}
+                        <td>: {{.New_Jabatan}}</td>
+                        {{else}}
+                        <td style="font-color:green";>: {{.New_Jabatan}}</td>
+                        {{end}}
+                      </tr>
+                      <tr>
+                        <td><b>Alamat Perusahaan</b>  </td>
+                        {{if eq .New_Alamat_perusahaan .Alamat_perusahaan}}
+                        <td>: {{.New_Alamat_perusahaan}}</td>
+                        {{else}}
+                        <td style="font-color:green";>: {{.New_Alamat_perusahaan}}</td>
+                        {{end}}
+                      </tr>
+                      <tr>
+                        <td><b>Nomor Telepone Perusahaan</b> </td>
+                        {{if eq .New_Nomor_telepon_saat .Nomor_telepon_saat}}
+                        <td>: {{.New_Nomor_telepon_saat}}</td>
+                        {{else}}
+                        <td style="font-color:green";>: {{.New_Nomor_telepon_saat}}</td>
+                        {{end}}
+                      </tr>
+                      <tr>
+                        <td><b>Nomor Handphone</b>  </td>
+                        {{if eq .New_Nomor_handphone .Nomor_handphone}}
+                        <td>: {{.New_Nomor_handphone}}</td>
+                        {{else}}
+                        <td style="font-color:green";>: {{.New_Nomor_handphone}}</td>
+                        {{end}}
+                      </tr>
+                      <tr>
+                        <td><b>Nomor Kartu Tanda Penduduk</b>  </td>
+                        {{if eq .New_Nomor_ktp .Nomor_ktp}}
+                        <td>: {{.New_Nomor_ktp}}</td>
+                        {{else}}
+                        <td style="font-color:green";>: {{.New_Nomor_ktp}}</td>
+                        {{end}}
+                      </tr>
+                      <tr>
+                        <td><b>Tanggal Lahir</b>  </td>
+                        {{if eq .New_Birthday .Birthday}}
+                        <td>: {{.New_Birthday}}</td>
+                        {{else}}
+                        <td style="font-color:green";>: {{.New_Birthday}}</td>
+                        {{end}}
+                      </tr>
+                      <tr>
+                        <td><b>Jenis Kelamin</b>  </td>
+                        {{if eq .New_Jenis_kelamin .Jenis_kelamin}}
+                        <td>: {{.New_Jenis_kelamin}}</td>
+                        {{else}}
+                        <td style="font-color:green";>: {{.New_Jenis_kelamin}}</td>
+                        {{end}}
+                      </tr>
+                    </table> 
+                  </td>
+                </tr>
+              </table>
+              <form  id="form-work" class="" name="form-work" action="#"  method="POST">
+                <div class="form-group">
+                  <div class="col-md-4 col-md-offset-2">
+                    <button class="btn btn-primary btn-lg btn-block info" style="background: red;">Tolak Permintaan Perubahan Data Distributor</button>
+                  </div>
+                </div>
+              </form>
+              <form  id="form-work" class="" name="form-work" action="/approvaledituserdata"  method="POST">
+                <input name="csrf" class="form-control" value="{{.CSRF}}" type="text">
+                <input name="token" class="form-control" value="{{.token}}" type="text">
+                <div class="form-group">
+                  <div class="col-md-4">
+                    <button class="btn btn-primary btn-lg btn-block info">Setujui Permintaan Perubahan Data Distributor</button>
+                  </div>
+                </div>
+              </form>
+              {{end}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
+{{end}}

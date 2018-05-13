@@ -1,0 +1,63 @@
+{{define "content"}}
+<title>Approval Klaim Pembayaran</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="{{.BaseURL}}assets/css/william.css">
+<style>
+hr.style11 {
+  height: 6px;
+  background: url(http://ibrahimjabbari.com/english/images/hr-11.png) repeat-x 0 0;
+  border: 0;
+}
+</style>
+<div>
+ <form id="form-work" class="timeline-block" name="form-work" action="/cancelpaymentclaimdata" method="POST">
+      <div class="fancy-header">
+        <i class="fa fa-money" aria-hidden="true"></i><br>
+        Klaim Pembayaran - {{.Payment_number}}<br>
+       Menunggu Konfirmasi
+      </div>
+      <div class="form-group row">
+        <div class="col-md-12">
+          <h4>Nama Perusahaan</h4>
+          <p>{{.Company}}</p>
+          <h4>Nama Proyek</h4>
+          <p>{{.Project_Name}}</p>
+          <h4>Tanggal</h4>
+          <p>{{.Date_Payment}}</p>
+          <h4>Nominal</h4>
+          <p>Rp {{.Pay}}</p>
+          <h4>Bukti Bayar</h4>
+          {{if eq .Payment_File "#"}}
+          <p>tidak ada berkas</p>
+          {{else}}
+          <div style='padding-bottom: 10px'><a class='download' href='/download/payment/{{.Payment_File}}' target='blank'><i class='fa fa-download' aria-hidden='true'></i> Unduh</a></div>
+          {{end}}
+          <input name="paymentId" id="paymentID" type="text" style="border: 0 !important; display: none;" required value="{{.Payment_id}}" />
+          <input name="orderId" id="orderID" type="text" style="border: 0 !important; display: none;" required value="{{.Order_id}}" />
+
+                    <div class='buttons'>
+  <button class='button button-reject' id='approve' type='submit'>
+    Batal Klaim Pembayaran
+  </button>
+</div>
+ </form>
+          
+</div>
+
+
+
+<script type="text/javascript">
+          function openBoxNoteReject(){
+            document.getElementById("form-reject").style.display="block";
+            return false;
+          }
+</script>
+        </div>
+      </div>
+    </form>
+</div>
+
+
+
+
+{{end}}

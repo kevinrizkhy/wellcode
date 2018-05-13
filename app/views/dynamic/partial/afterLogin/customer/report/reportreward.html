@@ -1,0 +1,61 @@
+{{define "content"}}
+<link rel="stylesheet" href="{{.BaseURL}}assets/css/bower_components/bootstrap/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="{{.BaseURL}}assets/css/bower_components/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="{{.BaseURL}}assets/css/bower_components/morris.js/morris.css">
+<link rel="stylesheet" href="{{.BaseURL}}assets/dist/css/AdminLTE.min.css">
+<link rel="stylesheet" href="{{.BaseURL}}assets/css/bower_components/select2/dist/css/select2.min.css">
+<link rel="stylesheet" href="{{.BaseURL}}assets/css/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+<link rel="stylesheet" href="{{.BaseURL}}assets/dist/css/skins/_all-skins.min.css">
+<script src="{{.BaseURL}}assets/css/bower_components/raphael/raphael.min.js"></script>
+<script src="{{.BaseURL}}assets/css/bower_components/morris.js/morris.min.js"></script>
+<script src="{{.BaseURL}}assets/css/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="{{.BaseURL}}assets/css/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<link rel='stylesheet prefetch' href='https://fonts.googleapis.com/icon?family=Material+Icons'>
+<script src="{{.BaseURL}}assets/css/bower_components/select2/dist/js/select2.full.min.js"></script>
+<script>
+  $(function () {
+    $('.select2').select2()
+  })
+  $( document ).ready(function() {
+    setup();
+    //window.print();
+  });
+  var results;
+  function setup() {
+    $('#title').html("Daftar Pembelian");
+    document.getElementById("detailButton").style.display="none";
+    $('#example1').DataTable({
+      data: {{.RewardList}},
+      destroy: true,
+      responsive: true,
+      columns:[{title:"Periode"},{title:"Total Pembelian"},{title:"Stiker"},{title:"Hadiah"},{title:"Cashback"}]
+    });
+  }
+</script>
+<div id="wrapper" class="container" style="padding-top: 0; width: 100%;">
+  <div style="margin: 0 auto; overflow: auto; width: 100%;">
+    <div class="col-md-12"  style="padding: 25px 0 0 0;">
+      <b><h3 class="profile-username text-center" style="font-size: 25px; padding-bottom: 20px;">Reward</h3></b>
+    </div>
+    <div class="form-group">      
+      <div class="col-xs-12" style="display: block; width: 100%;" id="list">
+        <div class="box">
+          <div class="box-body">
+            <table id="example1" class="hover table table-bordered table-striped" width="100%">
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="col-xs-12" style="display: none;" id="history">
+        <div class="box">
+          <div class="box-body" style="margin: 0 auto;">
+            <div id="detailTable"></div>
+          </div>
+        </div>
+      </div>
+      <div id="detailButton" >
+      </div>
+    </div>
+  </div>
+</div>
+{{end}}

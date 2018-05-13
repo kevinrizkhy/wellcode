@@ -1,0 +1,107 @@
+{{define "content"}}
+<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+<link rel="stylesheet" href="{{.BaseURL}}assets/css/style-login.css">
+<script type="text/javascript">
+  setInterval(getData, 2000);
+  function getData(){
+    var id = document.getElementById("campaignId").value;
+    var displayResources = $('#display-resources');
+    $.ajax({
+      type: "GET",
+      url: "{{.BaseURL}}getJSON/campaign/"+id,
+      success: function(result)
+      {
+        var output = "<table id='listTab' style='overflow:auto; width:1850px; text-align:left; padding:8px;'>";
+        for(var i = 0; i < result.length;i++){
+          output+= "<tr>";
+            //alert(result[i][0]+"\n"+result[i][1]+"\n"+result[i][2]+"\n"+result[i][3]+"\n"+result[i][4]+"\n"+result[i][5]+"\n"+result[i][6]+"\n"+result[i][7]+"\n"+result[i][8]+"\n"+result[i][9]+"\n"+result[i][10]+"\n"+result[i][11])
+            if(result[i][5]=="false"){
+              if (result[i][4]==""){
+                output+="<td style='width:25px; text-align:center;'><i class='fa fa-times' title='"+result[i][4]+"' style='color:red;'></td>";
+              }else{
+                output+="<td style='width:25px; text-align:center;'><i class='fa fa-check-circle' title='"+result[i][4]+"' style='color:green;'></td>";
+              }
+            }else{
+              output+="<td style='width:25px; text-align:center;'><i class='fa fa-undo' title='"+result[i][4]+"' style='color:red;'></td>";
+            }
+            if(result[i][6]==""){
+              output+="<td style='width:25px; text-align:center;'></td>";
+            }else {
+              output+="<td  style='width:25px; text-align:center;'><i class='fa fa-check-circle' title='"+result[i][6]+"' style='color:green;'></td>";
+            }
+            output+="<td style='width:200px;'>"+result[i][0]+"</td><td style='width:200px;'>"+result[i][1]+"</td><td style='width:200px;'>"+result[i][2]+"</td><td style='width:200px;'>"+result[i][7]+"</td><td style='width:200px;'>"+result[i][8]+"</td><td style='width:200px;'>"+result[i][9]+"</td><td style='width:200px;'>"+result[i][10]+"</td><td style='width:200px;'>"+result[i][11]+"</td><td style='width:200px;'>"+result[i][3]+"</td></tr>";
+          }
+          output+="</table>";
+          displayResources.html(output);
+        }
+      });
+  }
+</script>
+<style type="text/css" >
+#listTab {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+  table-layout: fixed;
+  word-wrap: break-word;
+}
+#listTab td, #listTab th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+#listTab tr:nth-child(even){background-color: #f2f2f2;}
+#listTab tr:hover {background-color: #aacbff;}
+#listTab th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  color: white;
+}
+div.sticky {
+  position: -webkit-sticky; /* Safari */
+  position: sticky;
+  top: 0;
+}
+</style>
+<div id="wrapper" class="container" style="padding-top: 0;">
+  <div style="margin: 0 auto;">
+    <div class="col-md-12"  style="padding: 25px 0 0 0;">
+      <b><h3 class="profile-username text-center" style="font-size: 25px">Status Campaign</h3></b>
+    </div>
+    <div class="form-group">
+      <div class="row">
+        <div class="col-md-offset-2 col-md-8">
+          <label class="control-label" for="district"><span style="color: red;">*</span>Pilih Campaign</label>
+          <select id="campaignId" name="campaignId" class="form-control select2" onchange="getData()" style="width: 100%;">
+            {{ range $i := .Campaign }}
+            <option value="{{index $i 0}}" >{{index $i 1}}</option>
+            {{ end }}
+          </select>
+        </div>
+      </div>
+      <br><br>
+      <div class="col-md-12" id="listTab" style="max-height:600px;height:400px; overflow: auto; text-align: center; ">
+        <div class="sticky">
+          <table style="position: sticky; background-color: #357ca5; width:1850px;color: white; ">
+            <thead>
+              <td style="width:25px;" title="Terkirim">T</td>
+              <td style="width:25px;" titlle="Kunjungi">K</td>
+              <td style="width:200px;">Nama Perusahaan</td>
+              <td style="width:200px;">PIC</td>
+              <td style="width:200px;">Email</td>
+              <td style="width:200px;">Alamat</td>
+              <td style="width:200px;">Kota</td>
+              <td style="width:200px;">Provinsi</td>
+              <td style="width:200px;">Telefon</td>
+              <td style="width:200px;">Aktivitas</td>
+              <td style="width:200px;">Tanggal Dibuat</td>
+            </thead>
+          </table>
+        </div>
+        <div id="display-resources">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{{end}}

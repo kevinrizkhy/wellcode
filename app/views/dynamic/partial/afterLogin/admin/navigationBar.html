@@ -1,0 +1,184 @@
+{{define "navigationBar"}}
+<script>
+  $(function (){
+    setNavigation();
+  });
+  function setNavigation() {
+    var path = window.location.pathname;
+    path = path.replace(/\/$/,"");
+    path = decodeURIComponent(path);
+    $(".sidebar-menu a").each(function () {
+      var href = $(this).attr('href');
+      if(path.substring(0,href.length)===href){
+        $(this).closest('li').addClass('active');
+        $(this).parent().parent().css({"display":"block"});
+        $(this).parent().parent().parent().addClass('menu-open');
+      }
+    });
+  }
+</script>
+<ul class="sidebar-menu" data-widget="tree">
+  <li class="header">Navigasi Utama</li>
+  <li>
+    <a href="/home">
+      <i class="fa fa-home"></i> &nbsp&nbsp&nbsp<span>Beranda</span>
+    </a>
+  </li>
+  {{if eq .Role "Sales"}}
+  <li>
+    <a href="/order">
+      <i class="fa fa-list-alt"></i> &nbsp&nbsp&nbsp<span>Daftar Pesanan</span>
+    </a>
+  </li>
+
+  <li><a href="/userlist/distributor"><i class="fa fa-users"></i> &nbsp&nbsp&nbsp<span>Daftar Distributor</span></a></li>
+  {{end}}
+  {{if eq .Role "Finance"}}
+  <li>
+    <a href="/order">
+      <i class="fa fa-list-alt"></i> &nbsp&nbsp&nbsp<span>Daftar Pesanan</span>
+    </a>
+  </li>
+  {{end}}
+  <li>
+    <a href="/pricelist" target=”_blank”>
+      <i class="fa fa-list-alt"></i> &nbsp&nbsp&nbsp<span>Daftar Harga</span>
+    </a>
+  </li>
+  <!--<li>
+    <a href="/invoice">
+      <i class="fa fa-credit-card"></i> &nbsp&nbsp&nbsp<span>Daftar Tagihan</span>
+    </a>
+  </li>
+  <li>
+    <a href="/voucher">
+      <i class="fa fa-money"></i> &nbsp&nbsp&nbsp<span>Daftar Pembayaran</span>
+    </a>
+  </li>-->
+  {{if eq .Role "Super Admin"}}  
+  <li><a href="/order"><i class="fa fa-list-alt"></i> &nbsp&nbsp&nbsp<span>Daftar Pesanan</span></a></li>
+  <li><a href="/userlist/distributor"><i class="fa fa-users"></i> &nbsp&nbsp&nbsp<span>Daftar Distributor</span></a></li>
+  <li><a href="/userlist/sales"><i class="fa fa-users"></i> &nbsp&nbsp&nbsp<span>Daftar Sales</span></a></li>
+  <li class=" treeview" >
+    <a href="#" id="emailblast">
+      <i class="fa fa-envelope"></i> &nbsp&nbsp&nbsp<span>Email Blast</span>
+      <span class="pull-right-container">
+        <i class="fa fa-angle-left pull-right"></i>
+      </span>
+    </a>
+    <ul class="treeview-menu">
+      <li><a href="/add/campaign"></i>Tambah Campaign</a></li>
+      <li><a href="/send/campaign"></i>Kirim Campaign</a></li>
+      <li><a href="/view/campaign-status"></i>Status Prospek</a></li>
+      <li><a href="/view/prospect-list"></i>Daftar Prospek</a></li>
+    </ul>
+  </li>
+  <li class="treeview">
+    <a href="#">
+      <i class="fa fa-users"></i> &nbsp&nbsp&nbsp<span>Wilayah</span>
+      <span class="pull-right-container">
+        <i class="fa fa-angle-left pull-right"></i>
+      </span>
+    </a>
+    <ul class="treeview-menu">
+      <li><a href="/tambah/wilayah"></i>Tambah Region</a></li>
+    </ul>
+  </li>
+  <li class="treeview">
+    <a href="#">
+      <i class="fa fa-users"></i> &nbsp&nbsp&nbsp<span>Pengguna</span>
+      <span class="pull-right-container">
+        <i class="fa fa-angle-left pull-right"></i>
+      </span>
+    </a>
+    <ul class="treeview-menu">
+      <li><a href="/createuser">Buat Pengguna</a></li>
+      <li><a href="/view/user">Daftar Pengguna</a></li>
+      <li><a href="/listapprovaldistributor">Daftar Persetujuan Distributor </a></li>
+      <li><a href="/listrequesteditprofile">Pengajuan Perubahan Data </a></li>
+    </ul>
+  </li>
+  {{end}}
+  {{if eq .Role "Admin"}}
+  <li class="treeview">
+    <a href="#">
+      <i class="fa fa-users"></i> &nbsp&nbsp&nbsp<span>Wilayah</span>
+      <span class="pull-right-container">
+        <i class="fa fa-angle-left pull-right"></i>
+      </span>
+    </a>
+    <ul class="treeview-menu">
+      <li><a href="/tambah/wilayah"></i>Tambah Region</a></li>
+    </ul>
+  </li>
+  <li class="treeview">
+    <a href="#">
+      <i class="fa fa-users"></i> &nbsp&nbsp&nbsp<span>Pengguna</span>
+      <span class="pull-right-container">
+        <i class="fa fa-angle-left pull-right"></i>
+      </span>
+    </a>
+    <ul class="treeview-menu">
+      <li><a href="/createuser">Buat Pengguna</a></li>
+      <li><a href="/view/user">Daftar Pengguna</a></li>
+      <li><a href="/listapprovaldistributor">Daftar Persetujuan Distributor </a></li>
+      <li><a href="/listrequesteditprofile">Pengajuan Perubahan Data </a></li>
+    </ul>
+  </li>
+  {{end}}
+  {{if eq .Role "Sales Manager"}}  
+  <li><a href="/order"><i class="fa fa-list-alt"></i> &nbsp&nbsp&nbsp<span>Daftar Pesanan</span></a></li>
+  <li><a href="/userlist/distributor"><i class="fa fa-users"></i> &nbsp&nbsp&nbsp<span>Daftar Distributor</span></a></li>
+  <li><a href="/userlist/sales"><i class="fa fa-users"></i> &nbsp&nbsp&nbsp<span>Daftar Sales</span></a></li>
+  <li class=" treeview" >
+    <a href="#" id="emailblast">
+      <i class="fa fa-envelope"></i> &nbsp&nbsp&nbsp<span>Email Blast</span>
+      <span class="pull-right-container">
+        <i class="fa fa-angle-left pull-right"></i>
+      </span>
+    </a>
+    <ul class="treeview-menu">
+      <li><a href="/add/campaign"></i>Tambah Campaign</a></li>
+      <li><a href="/send/campaign"></i>Kirim Campaign</a></li>
+      <li><a href="/view/campaign-status"></i>Status Prospek</a></li>
+      <li><a href="/view/prospect-list"></i>Daftar Prospek</a></li>
+    </ul>
+  </li>
+  {{end}}
+  {{if eq .Role "Finance"}}
+  <li><a href="/createinvoiceorder"><i class="fa fa-newspaper"></i> &nbsp&nbsp&nbsp<span>Buat Tagihan</span></a></li>
+  <!-- <li><a href="/view/campaign-graph"></i>Grafik Campaign</a></li> -->
+  {{end}}
+  {{if ne .Role "Admin"}}
+  <li class="treeview" >
+    <a href="#">
+      <i class="fa fa-file"></i> &nbsp&nbsp&nbsp&nbsp<span>Laporan</span>
+      <span class="pull-right-container">
+        <i class="fa fa-angle-left pull-right"></i>
+      </span>
+    </a>
+    <ul class="treeview-menu">
+      <li><a href="/report/sale/distributor"></i>Penjualan</a></li>
+      {{if eq .Role "Sales"}}
+      <li><a href="/report/sale/sales"></i>Penjualan Distributor</a></li>
+      {{else if eq .Role "Sales Manager"}}
+      <li><a href="/report/sale/sales"></i>Penjualan Distributor</a></li>
+      <li><a href="/report/sale/managersales" ></i>Penjualan Sales</a></li>
+      {{end}}
+      <li><a href="/#" ></i>Tagihan</a></li>
+    </ul>
+  </li>
+  {{end}}
+  <li class="treeview">
+    <a href="#">
+      <i class="fa fa-user"></i> &nbsp&nbsp&nbsp&nbsp<span>Akun</span>
+      <span class="pull-right-container">
+        <i class="fa fa-angle-left pull-right"></i>
+      </span>
+    </a>
+    <ul class="treeview-menu" >
+      <li><a href="/myprofile" >Profil</a></li>
+    </ul>
+  </li>
+</ul>
+{{end}}
