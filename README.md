@@ -10,7 +10,7 @@
 ---
 ## Push
 1. git add .
-1. git commit -am "<commit>"
+1. git commit -am "--message--"
 1. git push origin master
 ---
 ## Pull
