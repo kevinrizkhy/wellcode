@@ -1,0 +1,16 @@
+.sidebar-menu-tree li a, .sidebar-menu-tree li a:focus, .sidebar-menu-tree li a:hover{
+	text-decoration: none !important;
+}
+
+.sidebar-menu-tree li span{
+	text-decoration: none !important;
+}
+
+.navbar-nav>.messages-menu>.dropdown-menu>li .menu>li>a>p{
+	word-break: break-word;
+	white-space: normal;
+}
+
+.user-menu #profPic {
+	margin-right: 5px;
+}
