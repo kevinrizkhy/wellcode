@@ -1,0 +1,430 @@
+{{define "content"}}
+<link rel="stylesheet" href="{{.BaseURL}}assets/css/william.css">
+<script src="{{.BaseURL}}assets/css/bower_components/chart.js/Chart.min.js"></script>
+<script>
+  $(function() {
+    $('.pop').on('click', function() {
+      {{if .profile_picture}}
+      $('.imagepreview').attr('src', "{{.BaseURL}}assets/profile_picture/{{.profile_picture}}");
+      {{else}}
+      $('.imagepreview').attr('src', "{{.BaseURL}}assets/profile_picture/default.jpg");
+      {{end}}
+      $('#imagemodal').modal('show');   
+    });   
+  });
+
+  $( document ).ready(function() {
+    var salesChartData = {
+      labels  : ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul','Agt','Sep','Okt','Nov','Des'],
+      datasets: [
+      {
+        label               : 'Electronics',
+        fillColor           : '#73BDD6',
+        strokeColor         : '#73BDD6',
+        pointColor          : '#73BDD6',
+        pointStrokeColor    : '#c1c7d1',
+        pointHighlightFill  : '#fff',
+        pointHighlightStroke: 'rgba(220,220,220,1)',
+        data                :  {{.PenjualanGrafik}}
+      },
+      ]
+    }
+
+    var salesCanvas                   = $('#salesChart').get(0).getContext('2d')
+    var sales                         = new Chart(salesCanvas)
+    var salesData                     = salesChartData
+    var salesOptions                  = {
+      scaleBeginAtZero        : true,
+      scaleShowGridLines      : true,
+      scaleGridLineColor      : 'rgba(0,0,0,.05)',
+      scaleGridLineWidth      : 1,
+      scaleShowHorizontalLines: true,
+      scaleShowVerticalLines  : true,
+      barShowStroke           : true,
+      barStrokeWidth          : 2,
+      barValueSpacing         : 5,
+      barDatasetSpacing       : 1,
+      legendTemplate          : '<ul class="<%=name.toLowerCase()%>-legend"><% for (var i=0; i<datasets.length; i++){%><li><span style="background-color:<%=datasets[i].fillColor%>"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>',
+      responsive              : true,
+      maintainAspectRatio     : true,
+      scaleLabel              : function(label){return  label.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");},
+      tooltips: {
+       callbacks: {
+         label: function(tooltipItem, data) {
+          var value = data.datasets[0].data[tooltipItem.index];
+          value = value.toString();
+          value = value.split(/(?=(?:...)*$)/);
+          value = value.join(',');
+          return value;
+        }
+        } // end callbacks:
+      }, //end tooltips
+    }
+    salesOptions.datasetFill = false
+    sales.Bar(salesData, salesOptions)
+
+    var distributorChartData = {
+      labels  : {{.Company}},
+      datasets: [
+      {
+        label               : 'Electronics',
+        fillColor           : '#73BDD6',
+        strokeColor         : '#73BDD6',
+        pointColor          : '#73BDD6',
+        pointStrokeColor    : '#c1c7d1',
+        pointHighlightFill  : '#fff',
+        pointHighlightStroke: 'rgba(220,220,220,1)',
+        data                : {{.Company_total}}
+      },
+      ]
+    }
+
+    var distributorCanvas                   = $('#distributorChart').get(0).getContext('2d')
+    var distributor                         = new Chart(distributorCanvas)
+    var distributorData                     = distributorChartData
+    var distributorOptions                  = {
+      scaleBeginAtZero        : true,
+      scaleShowGridLines      : true,
+      scaleGridLineColor      : 'rgba(0,0,0,.05)',
+      scaleGridLineWidth      : 1,
+      scaleShowHorizontalLines: true,
+      scaleShowVerticalLines  : true,
+      barShowStroke           : true,
+      barStrokeWidth          : 2,
+      barValueSpacing         : 5,
+      barDatasetSpacing       : 1,
+      legendTemplate          : '<ul class="<%=name.toLowerCase()%>-legend"><% for (var i=0; i<datasets.length; i++){%><li><span style="background-color:<%=datasets[i].fillColor%>"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>',
+      responsive              : true,
+      maintainAspectRatio     : true,
+      scaleLabel              : function(label){return  label.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");},
+    }
+    distributorOptions.datasetFill = false
+    distributor.Bar(distributorData, distributorOptions)
+  });
+</script>
+<style>
+.col-md-4, .col-md-8{
+  padding: 0px 5px 15px 0px;
+}
+</style>
+
+<div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">              
+      <div class="modal-body">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <img src="" class="imagepreview" style="width: 100%;" >
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="JumbotronContent">
+  <div id="wrapper row" style="margin: 0 auto;">
+    <div class="col-md-12">
+      <div class="col-md-4">
+        <div class="dashboard-box profile-card">
+          <div class="agent-info">
+            <a href="#" class="pop">
+              {{if .profile_picture}}
+              <img id="profPic" class="profile-user-img img-responsive img-circle" alt="{{.Name}}" src="{{.BaseURL}}assets/profile_picture/{{.profile_picture}}" style="height: 120px !important;width: 120px !important;text-align: center;">
+              {{else}}
+              <img id="profPic" class="profile-user-img img-responsive img-circle" alt="{{.Name}}" src="{{.BaseURL}}assets/profile_picture/default.jpg" style="height: 120px !important;width: 120px !important;text-align: center;">
+              {{end}}
+            </a>
+            <span style="font-weight: bold">{{.username}}</span><br>
+            <span style=" color: #7F7F7F;">{{.userrole}}</span><br>
+            <span style="font-weight: bold;color: #7F7F7F;">{{.usercompany_name}}</span>
+            <br>
+            <table class="info-table">
+             <tr>
+              <td class="left">Nama</td>
+              <td class="right bold highlight">{{.username}}</td>
+            </tr>
+            <tr>
+              <td class="left">Jabatan</td>
+              <td class="right bold highlight">{{.userposition}}</td>
+            </tr>
+            <tr>
+              <td class="left">Perusahaan</td>
+              <td class="right bold highlight">{{.usercompany_name}}</td>
+            </tr>
+            <tr>
+              <td class="left">Email</td>
+              <td class="right bold highlight">{{.useremail}}</td>
+            </tr>
+            <tr>
+              <td class="left">Telepon 1</td>
+              <td class="right bold highlight">{{.usercontact_work}}</td>
+            </tr>
+            <tr>
+              <td class="left">Telepon 2</td>
+              <td class="right bold highlight">{{.userphone}}</td>
+            </tr>
+            <tr>
+              <td class="left">Alamat</td>
+              <td class="right bold highlight">{{.useraddress_work}}</td>
+            </tr>
+            <tr>
+              <td class="left">KTP</td>
+              <td class="right bold highlight">{{.userktp}}</td>
+            </tr>
+            <tr>
+              <td class="left">Birthday</td>
+              <td class="right bold highlight">{{.userbirthday}}</td>
+            </tr>
+            <tr>
+              <td class="left">Jenis Kelamin</td>
+              <td class="right bold highlight">{{.usergender}}</td>
+            </tr>
+            <tr>
+              <td class="left">Verifikasi</td>
+              <td class="right bold highlight">{{.userverified}}</td>
+            </tr>
+            <tr>
+              <td class="left">Tanggal Bergabung</td>
+              <td class="right bold highlight">{{.userjoin_date}}</td>
+            </tr>
+            <tr>
+              <td class="left">Terakhir Aktif</td>
+              <td class="right bold highlight">{{.userlogin_date}}</td>
+            </tr>
+            <tr>
+              <td class="left">Region</td>
+              <td class="right bold highlight">{{.userregionName}}</td>
+            </tr>
+            {{if eq .Role "Sales Manager"}}
+            <tr>
+              <td class="left">Posisi</td>
+              <td class="right bold highlight">{{.userrole}}</td>
+            </tr>
+            {{if eq .userrole "Distributor"}}
+            <tr>
+              <td class="left">Total Penjualan</td>
+              <td class="right bold highlight">Rp. {{.TotalPenjualan}}</td>
+            </tr>
+            {{end}}
+            {{else if eq .Role "Super Admin"}}
+            <tr>
+              <td class="left">Posisi</td>
+              <td class="right bold highlight">{{.userrole}}</td>
+            </tr>
+            {{if eq .userrole "Distributor"}}
+            <tr>
+              <td class="left">Total Penjualan</td>
+              <td class="right bold highlight">Rp. {{.TotalPenjualan}}</td>
+            </tr>
+            {{end}}
+            {{end}}
+          </table>
+        </div>
+      </div>
+    </div>
+      {{if (ne .userrole "Admin") }}
+      <div class="col-md-8">
+        <div class="dashboard-box">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs pull-right">
+                  <li class="">
+                    <a href="#tab_sales_1-1" data-toggle="tab" aria-expanded="true">Data</a>
+                  </li>
+                  <li class="active">
+                    <a href="#tab_sales_2-2" data-toggle="tab" aria-expanded="false">Grafik</a>
+                  </li>
+                </ul>
+                <div class="tab-content">
+                  <div class="tab-pane" id="tab_sales_1-1">
+                    <div class="box-body table-responsive no-padding">
+                      <table class="table table-hover">
+                        <tbody>
+                          <tr>
+                            <th>Bulan</th>
+                            <th>Total</th>
+                          </tr>
+                          {{ range $i, $a := .Month }}
+                          <tr>
+                            <td>{{$a}}</td>
+                            <td>Rp. {{index $.PenjualanString $i}}</td>
+                          </tr>
+                          {{end}}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <!-- /.tab-pane -->
+                  <div class="tab-pane active" id="tab_sales_2-2">
+                    <p class="text-center">
+                      <strong>Penjualan 2018</strong>
+                    </p>
+                    <div class="chart">
+                      <canvas id="salesChart" style="height: 352px; width: 703px;" width="703" height="180"></canvas>
+                    </div>
+                    <!-- /.tab-pane -->
+                  </div>
+                  <!-- /.tab-content -->
+                </div>
+              </div>
+              <!--==================================================
+
+              UNTUK SALES - Sales manager - Finance
+              
+              ==================================================-->
+              {{if (eq .userrole "Sales")}}
+              <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs pull-right">
+                  <li class="">
+                    <a href="#tab_dist_1-1" data-toggle="tab" aria-expanded="true">Data</a>
+                  </li>
+                  <li class="active">
+                    <a href="#tab_dist_2-2" data-toggle="tab" aria-expanded="false">Grafik</a>
+                  </li>
+                </ul>
+                <div class="tab-content">
+                  <div class="tab-pane" id="tab_dist_1-1">
+                    <div class="box-body table-responsive no-padding">
+                      <table class="table table-hover">
+                        <tbody>
+                          <tr>
+                            <th>Distributor</th>
+                            <th>Total Penjualan</th>
+                          </tr>
+                          {{ range $i, $a := .Company }}
+                          <tr>
+                            <td>{{$a}}</td>
+                            <td>Rp. {{index $.Company_string $i}}</td>
+                          </tr>
+                          {{end}}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <!-- /.tab-pane -->
+                  <div class="tab-pane active" id="tab_dist_2-2">
+                    <p class="text-center">
+                      <strong>Penjualan 2018 (Distributor)</strong>
+                    </p>
+                    <div class="chart">
+                      <canvas id="distributorChart" style="height: 352px; width: 703px;" width="703" height="180"></canvas>
+                    </div>
+                    <!-- /.tab-pane -->
+                  </div>
+                  <!-- /.tab-content -->
+                </div>
+                {{end}}
+                {{if (eq .userrole "Sales Manager")}}
+                <div class="nav-tabs-custom">
+                  <ul class="nav nav-tabs pull-right">
+                    <li class="">
+                      <a href="#tab_dist_1-1" data-toggle="tab" aria-expanded="true">Data</a>
+                    </li>
+                    <li class="active">
+                      <a href="#tab_dist_2-2" data-toggle="tab" aria-expanded="false">Grafik</a>
+                    </li>
+                  </ul>
+                  <div class="tab-content">
+                    <div class="tab-pane" id="tab_dist_1-1">
+                      <div class="box-body table-responsive no-padding">
+                        <table class="table table-hover">
+                          <tbody>
+                            <tr>
+                              <th>Distributor</th>
+                              <th>Total Penjualan</th>
+                            </tr>
+                            {{ range $i, $a := .Company }}
+                            <tr>
+                              <td>{{$a}}</td>
+                              <td>Rp. {{index $.Company_string $i}}</td>
+                            </tr>
+                            {{end}}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                    <!-- /.tab-pane -->
+                    <div class="tab-pane active" id="tab_dist_2-2">
+                      <p class="text-center">
+                        <strong>Penjualan 2018 (Sales)</strong>
+                      </p>
+                      <div class="chart">
+                        <canvas id="distributorChart" style="height: 352px; width: 703px;" width="703" height="180"></canvas>
+                      </div>
+                      <!-- /.tab-pane -->
+                    </div>
+                    <!-- /.tab-content -->
+                  </div>
+                  {{end}}
+                <!--==================================================
+                
+                UNTUK DISTRIBUTOR & SALES
+                URUTKAN DARI YANG TERBARU (DESC)
+                
+                ==================================================-->
+                {{if ne .userrole "Finance"}}
+                <p class="text-center">
+                  <strong>Riwayat Penjualan 2018</strong>
+                </p>
+                <div class="box-body table-responsive no-padding">
+                  <table class="table table-hover">
+                    <tbody>
+                      <tr>
+                        <th>No.</th>
+                        <th>Nama</th>
+                        {{if (eq .userrole "Sales")}}
+                        <th>Distributor</th>
+                        {{end}}
+                        {{if (eq .userrole "Sales Manager")}}
+                        <th>Distributor</th>
+                        {{end}}
+                        <th>Tanggal</th>
+                        <th>Total</th>
+                        <th>Terbayar</th>
+                        <th>Status</th>
+                      </tr>
+                      {{ range $i, $a := .History }}
+                      <tr onclick="window.location.href='{{$.BaseURL}}order/{{index $.History $i 5}}#bottompage'">
+                        <td>{{$i}}</td>
+                        <td>{{index $.History $i 0}}</td>
+                        {{if (eq $.userrole "Sales")}}
+                        <td>{{index $.History $i 6}}</td>
+                        {{end}}
+                        {{if (eq $.userrole "Sales Manager")}}
+                        <td>{{index $.History $i 6}}</td>
+                        {{end}}
+                        <td>{{index $.History $i 1}}</td>
+                        <td>Rp. {{index $.History $i 2}}</td>
+                        <td>Rp. {{index $.History $i 3}}</td>
+                        <td>
+                          {{$s := index $.History $i 4}}
+                          {{if eq $s "Pembelian Selesai"}}
+                          <span class="label label-success">{{$s}}</span>
+                          {{else if eq $s "Menunggu Pembayaran"}}
+                          <span class="label label-warning">{{$s}}</span>
+                          {{else if eq $s "Pembayaran Dilunasi"}}
+                          <span class="label label-success">{{$s}}</span>
+                          {{else if eq $s "Pembelian Batal"}}
+                          <span class="label label-danger">{{$s}}</span>
+                          {{else if eq $s "Proses Perancangan"}}
+                          <span class="label label-info">{{$s}}</span>
+                          {{else if eq $s "Belum Lunas"}}
+                          <span class="label label-warning">{{$s}}</span>
+                          {{end}}
+                        </td>
+                      </tr>
+                      {{end}}
+                    </tbody>
+                  </table>
+                </div>
+                {{end}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {{end}}
+    </div>
+  </div>
+</div>
+</div>
+{{end}}

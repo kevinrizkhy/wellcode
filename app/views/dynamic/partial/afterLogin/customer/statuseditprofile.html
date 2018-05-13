@@ -1,0 +1,218 @@
+{{define "content"}}
+  <link rel="stylesheet" href="{{.BaseURL}}assets/css/bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="{{.BaseURL}}assets/css/bower_components/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="{{.BaseURL}}assets/css/bower_components/morris.js/morris.css">
+  <link rel="stylesheet" href="{{.BaseURL}}assets/dist/css/AdminLTE.min.css">
+  <link rel="stylesheet" href="{{.BaseURL}}assets/css/bower_components/select2/dist/css/select2.min.css">
+  <link rel="stylesheet" href="{{.BaseURL}}assets/css/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+  <link rel="stylesheet" href="{{.BaseURL}}assets/dist/css/skins/_all-skins.min.css">
+  <script src="{{.BaseURL}}assets/css/bower_components/raphael/raphael.min.js"></script>
+  <script src="{{.BaseURL}}assets/css/bower_components/morris.js/morris.min.js"></script>
+  <script src="{{.BaseURL}}assets/css/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+  <script src="{{.BaseURL}}assets/css/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+  <link rel='stylesheet prefetch' href='https://fonts.googleapis.com/icon?family=Material+Icons'>
+  <script src="{{.BaseURL}}assets/css/bower_components/select2/dist/js/select2.full.min.js"></script>
+  <script>
+    $(function () {
+      $('.select2').select2()
+    })
+    $( document ).ready(function() {
+    setup();
+  });
+  </script>
+  <script>
+    function detail(element) {
+      var rowID= element.parentNode.parentNode.rowIndex;
+      var id = document.getElementById("example1").rows[rowID].cells.item(0).innerHTML
+      var title = document.getElementById("example1").rows[rowID].cells.item(1).innerHTML
+      var company = document.getElementById("example1").rows[rowID].cells.item(2).innerHTML
+      var tipe = document.getElementById("example1").rows[rowID].cells.item(3).innerHTML
+      var list = document.getElementById("list").style.display="none";
+      var history = document.getElementById("history").style.display="block";
+      document.getElementById("backButton").style.display="block";
+      document.getElementById("dropdownRole").style.display="none";
+      if(tipe!="Admin"){
+        document.getElementById("detailButton").style.display="block";
+      }
+      $.ajax({
+        type: "GET",
+        url: "{{.BaseURL}}getJSON/statuseditprofiledetaildistributor/"+id,
+        success: function(result)
+        {
+          $('#title').html(title);
+          var res = "<table id='detailTab'><thead><tbody>";
+          res+= "<tr><td style='text-align:left;'>Nama Lengkap</td><td>&nbsp&nbsp&nbsp&nbsp:&nbsp&nbsp&nbsp&nbsp</td><td style='text-align:left;'>"+result[0][0]+"</td></tr>";
+          res+= "<tr><td style='text-align:left;'>Nama Perusahaan</td><td>&nbsp&nbsp&nbsp&nbsp:&nbsp&nbsp&nbsp&nbsp</td><td style='text-align:left;' >"+result[0][1]+"</td></tr>";
+          res+= "<tr><td style='text-align:left;'>Jabatan</td><td>&nbsp&nbsp&nbsp&nbsp:&nbsp&nbsp&nbsp&nbsp</td><td style='text-align:left;'>"+result[0][2]+"</td></tr>";
+          res+= "<tr><td style='text-align:left;'>Alamat Perusahaan</td><td>&nbsp&nbsp&nbsp&nbsp:&nbsp&nbsp&nbsp&nbsp</td><td style='text-align:left;'>"+result[0][3]+"</td></tr>";
+          res+= "<tr><td style='text-align:left;'>Nomor Telepone Perusahaan</td><td>&nbsp&nbsp&nbsp&nbsp:&nbsp&nbsp&nbsp&nbsp</td><td style='text-align:left;'>"+result[0][4]+"</td></tr>";
+          res+= "<tr><td style='text-align:left;'>Nomor Handphone</td><td>&nbsp&nbsp&nbsp&nbsp:&nbsp&nbsp&nbsp&nbsp</td><td style='text-align:left;'>"+result[0][5]+"</td></tr>";
+          res+= "<tr><td style='text-align:left;'>Nomor KTP</td><td>&nbsp&nbsp&nbsp&nbsp:&nbsp&nbsp&nbsp&nbsp</td><td style='text-align:left;'>"+result[0][6]+"</td></tr>";
+          res+= "<tr><td style='text-align:left;'>Tanggal Lahir</td><td>&nbsp&nbsp&nbsp&nbsp:&nbsp&nbsp&nbsp&nbsp</td><td style='text-align:left;'>"+result[0][7]+"</td></tr>";
+          res+= "<tr><td style='text-align:left;'>Jenis Kelamin</td><td>&nbsp&nbsp&nbsp&nbsp:&nbsp&nbsp&nbsp&nbsp</td><td style='text-align:left;'>"+result[0][8]+"</td></tr>";
+          res+= "<tr><td style='text-align:left;'>Tanggal Pengajuan</td><td>&nbsp&nbsp&nbsp&nbsp:&nbsp&nbsp&nbsp&nbsp</td><td style='text-align:left;'>"+result[0][9]+"</td></tr>";
+          res+= "<tr><td style='text-align:left;'>Status</td><td>&nbsp&nbsp&nbsp&nbsp:&nbsp&nbsp&nbsp&nbsp</td><td style='text-align:left;'>"+result[0][10]+"</td></tr>";
+          res+="</tbody></table>";
+          $('#detailTable').html(res);
+        }
+      });
+return true;
+}
+var results;
+function setup() {
+  $.ajax({
+    type: "GET",
+    url: "{{.BaseURL}}getJSON/statuseditprofiledistributor/pending",
+    success: function(result)
+    {
+      //$('#title').html("Daftar Pengajuan Perubahan Data Profil ");
+      document.getElementById("detailButton").style.display="none";
+      $('#example1').DataTable({
+        data: result,
+        destroy: true,
+        "scrollX":true,
+        columns:[{title:"ID"},{title:"Tanggal Pengajuan"},{title:"Status"},{title:""}]
+      });
+    }
+  });
+}
+function changeType(){
+  var types = $("#types option:selected").text();
+  if(types=="Semua"){
+    types="all";
+  }else if(types=="Disetujui"){
+    types="approve";
+  }else if (types=="Ditolak"){
+    types="reject";
+  }else{
+    types="pending";
+  }
+  $.ajax({
+    type: "GET",
+    url: "{{.BaseURL}}getJSON/statuseditprofiledistributor/"+types,
+    success: function(result)
+    {
+      //$('#title').html("Daftar Pengajuan Perubahan Data Profil");
+      if(result==null){
+        var table = $('#example1').DataTable();
+        table.clear().draw();
+      }else{
+        $('#example1').DataTable({
+          data: result,
+          destroy: true,
+          columns:[{title:"ID"},{title:"Tanggal Pengajuan"},{title:"Status"},{title:""}]
+        });
+      }
+    }
+  });
+}
+function back(){
+  $('#title').html("Daftar Pengguna");
+  document.getElementById("detailButton").style.display="none";
+  var list = document.getElementById("list").style.display="block";
+  var history = document.getElementById("history").style.display="none";
+  document.getElementById("backButton").style.display="none";
+  document.getElementById("dropdownRole").style.display="block";
+}
+</script>
+<style type="text/css">
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+  background-color: #357ca5 !important;
+}
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 30px;
+  height: 17px;
+}
+.switch input {display:none;}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 13px;
+  width: 13px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+input:checked + .slider {
+  background-color: #2196F3;
+}
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+input:checked + .slider:before {
+  -webkit-transform: translateX(13px);
+  -ms-transform: translateX(13px);
+  transform: translateX(13px);
+}
+/* Rounded sliders */
+.slider.round {
+  border-radius: 17px;
+}
+.slider.round:before {
+  border-radius: 50%;
+}
+</style>
+  <div id="wrapper" class="container" style="padding-top: 0;">
+    <div style="margin: 0 auto; overflow: auto;">
+      <div class="col-xs-12"  style="padding: 25px 0 0 0; display: inline-block; ">
+        <button id="backButton" style="margin-top: 0; float: left; display: none; background-color: #357ca5 !important;color: white !important;" type="button" class="btn btn-default" onclick="back()">
+          <i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp&nbspKembali
+        </button>
+        <div style="text-align: center;"> 
+          <b><h3 class="profile-username text-center" style="font-size: 25px; padding-bottom: 10px;" id="title">Daftar Pengajuan Perubahan Data Profil</h3></b>
+        </div>
+      </div>
+      <div class="col-md-offset-4 col-md-4" style="padding-bottom: 25px;" id="dropdownRole">
+        <select id="types" name="types" class="form-control select2" onchange="changeType()" style="width: 100%;" required>
+          <option value="all" >Semua</option>
+          <option value="pending" selected>Menunggu Persetujuan</option>
+          <option value="approve" >Disetujui</option>
+          <option value="reject" >Ditolak</option>
+        </select>
+      </div>
+      <div class="col-xs-12" style="display: block;" id="list"  style="padding-bottom: 25px;">
+        <div class="box">
+          <div class="box-body">
+              <table id="example1" class="hover table table-bordered table-striped" style="width:100%">
+              </table>
+          </div>
+        </div>
+      </div>
+      <div class="col-xs-12" style="display: none;" id="history">
+        <div class="box">
+          <div class="box-body" style="margin: 0 auto;">
+            <div id="detailTable"></div>
+          </div>
+        </div>
+      </div>
+      <div id="detailButton" >
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="alert alert-success " style="z-index: 99;position: absolute; top: 0; left: 50%; margin-top: 10px; margin-left: -150px; display: none; width: 300px; text-align: center;" id="alertSuccess">
+  <strong>Berhasil!</strong> Perubahan data telah disimpan.
+</div>
+<div class="alert alert-warning" style="z-index: 99;position: absolute; top: 0; left: 50%; margin-top: 10px; margin-left: -150px; display: none; width: 300px; text-align: center;" id="alertWarning">
+  <strong>Perhatian!</strong><br>Harap memilih Sales untuk Distributor.
+</div>
+<div class="alert alert-danger" style="z-index: 99;position: absolute; top: 0; left: 50%; margin-top: 10px; margin-left: -150px; display: none; width: 300px; text-align: center;" id="alertDanger">
+  <strong>Gagal!</strong> Perubahan data gagal disimpan.
+</div>
+{{end}}

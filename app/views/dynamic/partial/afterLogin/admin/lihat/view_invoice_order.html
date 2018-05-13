@@ -1,0 +1,19 @@
+{{define "content"}}
+<script>
+  $( document ).ready(function() {
+    document.getElementById("readcontent").innerHTML = {{.html}}
+  });
+</script>
+<div style="overflow: auto;">
+  <h1 style="padding: 20px 0; text-align: center;color:#606060;font-weight: bold;height: 20px; font-size: 20px;">Tagihan Pemesanan</h1>
+  <div id="wrapper" class="container">
+    <div id="readcontent" style="padding: 20px">
+    </div>
+    <div style="padding:  10px 20px 30px 20px; text-align: center;">
+      {{if eq .cancel "false"}}
+      <a href="{{.urllink}}"><button class="btn btn-danger">Batalkan Tagihan</button></a>
+      {{end}}
+    </div>
+  </div>
+</div>
+{{end}}

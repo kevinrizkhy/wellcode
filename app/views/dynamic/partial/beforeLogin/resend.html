@@ -1,0 +1,42 @@
+{{define "content"}}
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="UTF-8">
+    <title>Resend - SIP</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+    <link rel="stylesheet" href="{{.BaseURL}}assets/css/style-login.css">
+    </script>
+  </head>
+  <body>
+    <div id="wrapper" class="container">
+      <div style="margin: 0 auto;">
+        <div class="tabcontent">
+          <br><h1>Meminta Aktivasi Link ulang</h1>
+          <p>Silahkan masukkan alamat email Anda yang telah terdaftar pada sistem <b>PT. Sinar Inti Panel</b>.</p>
+           <p id="error" style="color: red;">{{.Error}}<p>
+          <div id="wrapper" class="container" style="padding: 2%;">
+            <form id="form-work" class="" name="form-work" action="/resenddata" method="POST">
+              <div class="form-group">
+                <div class="col-md-offset-3 col-md-6 col-md-offset-3">
+                  <!-- <label class="control-label" for="email">Email</label> -->
+                  <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-envelope-o"></i></span>
+                    <input name="email" class="form-control" placeholder="mail@mail.co.id" type="text">
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-md-4 col-md-offset-4">
+                  <button class="btn btn-primary btn-lg btn-block info">Masuk</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+{{end}}

@@ -1,0 +1,91 @@
+{{define "content"}}
+<!DOCTYPE html>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <title>Tambah Penerimaan</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{.BaseURL}}assets/css/william.css">
+  <script type="text/javascript">
+    function getData(){
+      var id = document.getElementById("filter").value;
+      if (id != "-") {
+          var displayResources = $('#balance');
+          $.ajax({
+            type: "GET",
+            url: "{{.BaseURL}}getJSON/getInfoOrder/"+id,
+            success: function(result)
+            {
+              if(result!=null){
+                var output = 'SISA PEMBAYARAN TAGIHAN '+result[0][0]+ ' - Rp '+ result[0][1];
+                displayResources.html(output);
+                document.getElementById("invoiceID").setAttribute('value',result[0][2]);
+                document.getElementById("orderID").setAttribute('value',result[0][3]);
+                document.getElementById("pay").value=result[0][4];
+              }else{
+                var output = "";
+                  displayResources.html(output);
+                  displayResources = $('#balance');
+                  output = "";
+                  displayResources.html(output);
+                  document.getElementById("orderID").setAttribute('value','');
+                  document.getElementById("pay").setAttribute('value','');
+                  document.getElementById("pay").value='';
+              }
+            }
+          });
+      }else{
+        displayResources = $('#balance');
+        output = "";
+        displayResources.html(output);
+        document.getElementById("orderID").setAttribute('value','');
+        document.getElementById("pay").setAttribute('value','');
+        document.getElementById("pay").value='';
+      }
+    }
+   
+  </script>
+</head>
+<body>
+  <div id="JumbotronContent">
+    <div id="wrapper" style="margin: 0 auto;">
+    <form  enctype="multipart/form-data" id="form-work" class="timeline-block" name="form-work" action="/paymentclaimdistributordata" method="POST">
+      <div id="MainContent">
+        <div class="">
+            <label class="control-label label-filter" for="district"><span style="color: red;">*</span>Pilih Distiributor</label>
+            <select id="filter" name="filter" class="form-control select2" onchange="getData()" style="width: 100%;">
+              {{ range $i := .Order_Name }}
+                  <option value="{{index $i 0}}" >{{index $i 1}}</option>
+              {{ end }}
+            </select>
+          </div>
+          
+        </div><br><br>
+      <div class="fancy-header" style="width:90% !important">
+        <i class="fa fa-money" aria-hidden="true"></i><br>
+        KLAIM PEMBAYARAN
+        <div id="balance"></div>
+      </div>
+      <div class="form-group row">
+        <div class="col-md-12">
+          <label for="date_payment">Tanggal</label>
+          <input name="date_payment" id="date-picker-payment" class="form-control" type="date"  required>
+          <label for="pay">Nominal</label>
+          <input name="pay" id="pay" class="form-control" type="number" min="1" max="10000000000000" required>
+          <label for="payment_file">Bukti</label>
+          <input name="payment_file" class="form-control" type="file">
+          <input name="invoiceId" id="invoiceID" type="text" style="border: 0 !important; display: none;" required />
+          <input name="orderId" id="orderID" type="text" style="border: 0 !important; display: none;" required />
+          <div class="buttons">
+            <button class="button button-ok" type="submit">Kirim</button>
+          </div>
+          <!--multipart file here-->
+        </div>
+      </div>
+    </form>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+{{end}}

@@ -1,0 +1,162 @@
+{{define "content"}}
+<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+<link rel="stylesheet" href="{{.BaseURL}}assets/css/style-login.css">
+<div id="wrapper" class="container" style="padding-top: 0;">
+  <div style="margin: 0 auto;">
+    <div class="col-md-12"  style="padding: 2% 0;">
+      <form  id="form-work" class="" name="form-work" action="/listrequesteditprofile"  method="POST">
+        <div class="form-group">
+          <div class="col-md-2">
+            <button class="btn btn-primary btn-lg btn-block info" style="font-size: 15px;width:50%;margin-left:30px !important;">Kembali</button>
+          </div>
+        </div>
+      </form>
+      <br><br>
+    </div>
+    <div>
+      <div class="form-group">
+        <div class="row">
+          <table style="height:100% !important; width:100%  !important;margin-left:60px !important;">
+            <tr>
+              <td>
+                <table style="height:100% !important; width:100%  !important;">
+                  <tr>
+                    <td  colspan="2"><b>Data Profil Distributor</b><br><br> </td>
+                  </tr>
+                  <tr>
+                    <td><b>Nama</b>  </td>
+                    <td>: {{.Name}}</td>
+                  </tr>
+                  <tr>
+                    <td><b>Nama Perusahaan</b> </td>
+                    <td>: {{.Nama_perusahaan}}</td>
+                  </tr>
+                  <tr>
+                    <td><b>Jabatan</b> </td>
+                    <td>: {{.Jabatan}}</td>
+                  </tr>
+                  <tr>
+                    <td><b>Alamat Perusahaan</b>  </td>
+                    <td>: {{.Alamat_perusahaan}}</td>
+                  </tr>
+                  <tr>
+                    <td><b>Nomor Telepone Perusahaan</b> </td>
+                    <td>: {{.Nomor_telepon_saat}}</td>
+                  </tr>
+                  <tr>
+                    <td><b>Nomor Handphone</b>  </td>
+                    <td>: {{.Nomor_handphone}}</td>
+                  </tr>
+                  <tr>
+                    <td><b>Nomor Kartu Tanda Penduduk</b>  </td>
+                    <td>: {{.Nomor_ktp}}</td>
+                  </tr>
+                  <tr>
+                    <td><b>Tanggal Lahir</b>  </td>
+                    <td>: {{.Birthday}}</td>
+                  </tr>
+                  <tr>
+                    <td><b>Jenis Kelamin</b>  </td>
+                    {{if eq .New_Jenis_kelamin "M"}}
+                    <td>: Laki-Laki</td>
+                    {{else}}
+                    <td>: Perempuan</td>
+                    {{end}}
+                  </tr>
+                </table>
+              </td>
+              <td>
+                <table style="height:100% !important; width:100%  !important;">
+                  <tr>
+                    <td  colspan="2"><b>Permintaan Perubahan Data Profil Distributor</b> <br><br></td>
+                  </tr>
+                  <tr>
+                    <td><b>Nama</b>  </td>
+                    {{if eq .New_Name .Name}}
+                    <td>: {{.New_Name}}</td>
+                    {{else}}
+                    <td style="color:green;">: {{.New_Name}}</td>
+                    {{end}}
+                  </tr>
+                  <tr>
+                    <td><b>Nama Perusahaan</b> </td>
+                    {{if eq .New_Nama_perusahaan .Nama_perusahaan}}
+                    <td>: {{.New_Nama_perusahaan}}</td>
+                    {{else}}
+                    <td style="color:green;">: {{.New_Nama_perusahaan}}</td>
+                    {{end}}
+                  </tr>
+                  <tr>
+                    <td><b>Jabatan</b> </td>
+                    {{if eq .New_Jabatan .Jabatan}}
+                    <td>: {{.New_Jabatan}}</td>
+                    {{else}}
+                    <td style="color:green;">: {{.New_Jabatan}}</td>
+                    {{end}}
+                  </tr>
+                  <tr>
+                    <td><b>Alamat Perusahaan</b>  </td>
+                    {{if eq .New_Alamat_perusahaan .Alamat_perusahaan}}
+                    <td>: {{.New_Alamat_perusahaan}}</td>
+                    {{else}}
+                    <td style="color:green;">: {{.New_Alamat_perusahaan}}</td>
+                    {{end}}
+                  </tr>
+                  <tr>
+                    <td><b>Nomor Telepone Perusahaan</b> </td>
+                    {{if eq .New_Nomor_telepon_saat .Nomor_telepon_saat}}
+                    <td>: {{.New_Nomor_telepon_saat}}</td>
+                    {{else}}
+                    <td style="color:green;">: {{.New_Nomor_telepon_saat}}</td>
+                    {{end}}
+                  </tr>
+                  <tr>
+                    <td><b>Nomor Handphone</b>  </td>
+                    {{if eq .New_Nomor_handphone .Nomor_handphone}}
+                    <td>: {{.New_Nomor_handphone}}</td>
+                    {{else}}
+                    <td style="color:green;">: {{.New_Nomor_handphone}}</td>
+                    {{end}}
+                  </tr>
+                  <tr>
+                    <td><b>Nomor Kartu Tanda Penduduk</b>  </td>
+                    {{if eq .New_Nomor_ktp .Nomor_ktp}}
+                    <td>: {{.New_Nomor_ktp}}</td>
+                    {{else}}
+                    <td style="color:green;">: {{.New_Nomor_ktp}}</td>
+                    {{end}}
+                  </tr>
+                  <tr>
+                    <td><b>Tanggal Lahir</b>  </td>
+                    {{if eq .New_Birthday .Birthday}}
+                    <td>: {{.New_Birthday}}</td>
+                    {{else}}
+                    <td style="color:green;">: {{.New_Birthday}}</td>
+                    {{end}}
+                  </tr>
+                  <tr>
+                    <td><b>Jenis Kelamin</b>  </td>
+                    {{if eq .New_Jenis_kelamin .Jenis_kelamin}}
+                    {{if eq .New_Jenis_kelamin "M"}}
+                    <td>: Laki-Laki</td>
+                    {{else}}
+                    <td>: Perempuan</td>
+                    {{end}}
+                    {{else}}
+                    {{if eq .New_Jenis_kelamin "M"}}
+                    <td style="color:green;">: Laki-Laki</td>
+                    {{else}}
+                    <td style="color:green;">: Perempuan</td>
+                    {{end}}
+                    {{end}}
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{{end}}

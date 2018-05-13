@@ -1,0 +1,44 @@
+ <form enctype="multipart/form-data" id="form-work" class="timeline-block" name="form-work" action="/order" method="POST">
+      <script>
+        function addFileForm(){
+          var element1 = document.createElement("input");
+          var element2 = document.createElement("br");
+          var count = 1 + document.getElementById("count").value;
+          var name = "order_file_"+count;
+          element1.setAttribute("form", "formperaturan");
+          element1.setAttribute("name", name);
+          element1.setAttribute("class", "form-control");
+          element1.setAttribute("placeholder", "Spesifikasi");
+          element1.setAttribute("type", "file");
+                element1.setAttribute("required","")
+          var divvar = document.getElementById("files");
+          divvar.appendChild(element2);
+          divvar.appendChild(element2);
+          divvar.appendChild(element1);
+        }
+
+      </script>
+      <div class="fancy-header">
+        <i class="fa fa-envelope-o" aria-hidden="true"></i><br>
+        PENGAJUAN PEMBELIAN
+      </div>
+      <div class="form-group row">
+        <div class="col-md-12">
+          <label for="project_name">Nama Proyek</label>
+          <input type="text" class="form-control" id="project_name" name="project_name" placeholder="Masukkan Nama Proyek" required>
+          <label for="project_location">Lokasi Proyek</label>
+          <input type="text" class="form-control" id="project_location" name="project_location" placeholder="Masukkan Lokasi Proyek" required>
+          <label for="description">Deskripsi Proyek</label>
+          <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+          <label for="order_file">Lampiran</label>
+          <input name="count" id="count" type="text" style="border: 0 !important; display: none;" required value="1" />
+          <input name="order_file_1" class="form-control" placeholder="Spesifikasi" type="file" required/>
+          <div id="files"></div>
+          <a href="#" onclick="addFileForm()">Tambah file</a>
+          <!--multipart file herel-->
+          <div class="buttons">
+            <button class="button button-ok" type="submit">Kirim</button>
+          </div>
+        </div>
+      </div>
+    </form>

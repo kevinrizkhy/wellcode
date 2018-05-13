@@ -1,0 +1,32 @@
+<div class="buttons">
+	<button class="button button-ok" onclick="window.location.href='/confirmorder/{{Link}}'" >Setuju</button><button class="button button-reject" onclick="return openRevision()">Revisi</button>
+</div>
+<div id="revisi" style="display: none;">
+  <form  enctype="multipart/form-data" id="form-work" class="timeline-block" name="form-work" action="/offer" method="POST">
+    <div class="fancy-header">
+      <i class="fa fa-envelope-o" aria-hidden="true"></i><br>
+      PROPOSAL PENAWARAN DESAIN <br>
+      Final Approve
+    </div>
+    <div class="form-group row">
+      <div class="col-md-12">
+        <label for="description">Deskripsi</label>
+        <textarea class="form-control" id="description" name="offer_description" rows="3"></textarea>
+        <label for="specification">Lampiran</label>
+        <input name="offer_file" class="form-control" placeholder="Spesifikasi" type="file"/>
+        <input name="history_id" type="text" style="border: 0 !important; display: none;" required value="{{History}}" />
+        <input name="distributor_id" type="text" style="border: 0 !important; display: none;" required value="{{DistributorID}}" />
+        <div class="buttons">
+          <button class="button button-ok" type="submit">Revisi</button>
+        </div>
+        <!--multipart file here-->
+      </div>
+    </div>
+  </form>
+</div>
+<script type="text/javascript">
+	function openRevision(){
+		document.getElementById("revisidist").style.display="block";
+		return false;
+	}
+</script>

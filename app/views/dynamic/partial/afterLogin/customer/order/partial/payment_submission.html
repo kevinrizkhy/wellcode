@@ -1,0 +1,36 @@
+<!-- 3. 8. Payment Submission  | Distributor, Status Invoice -->
+    <form  enctype="multipart/form-data" id="form-work" class="timeline-block" name="form-work" action="/paymentclaimdistributordata" method="POST">
+      <div class="fancy-header">
+        <i class="fa fa-money" aria-hidden="true"></i><br>
+        KLAIM PEMBAYARAN<br>
+        SISA PEMBAYARAN - Rp {{Balance}}
+      </div>
+      <div class="form-group row">
+        <div class="col-md-12">
+          <label for="date_payment">Tanggal</label>
+          <input name="date_payment" id="date-picker-payment" class="form-control" type="date"  required>
+          <label for="pay">Nominal</label>
+          <input name="pay" class="form-control" type="number" min="1" max="10000000000000" value="{{Paid}}" required>
+          <label for="payment_file">Bukti</label>
+          <input name="payment_file" class="form-control" type="file">
+          <input name="invoiceId" id="invoiceID" type="text" style="border: 0 !important; display: none;" required value="{{Invoice_id}}" />
+          <input name="orderId" id="orderID" type="text" style="border: 0 !important; display: none;" required value="{{Order_id}}" />
+          <div class="buttons">
+            <button class="button button-ok" type="submit">Kirim</button>
+          </div>
+          <!--multipart file here-->
+        </div>
+      </div>
+    </form>
+
+    <script>
+      // function getDate(){
+      //    document.getElementById("date-picker-payment").value = new Date().toDateInputValue();
+      //    alert(new Date().toDateInputValue())
+      // }
+      // $(document).ready(function(){
+      //   //$('#date-picker-payment').val(new Date().toDateInputValue())
+      //   //$("#date-picker-payment").attr("value", new Date().toDateInputValue());
+      // })
+      //document.getElementById("date-picker-payment").value = new Date().toDateInputValue();
+    </script>

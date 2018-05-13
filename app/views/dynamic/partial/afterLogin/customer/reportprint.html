@@ -1,0 +1,142 @@
+{{define "layout"}}
+<link href="{{.BaseURL}}assets/css/report_css/css.css" rel="stylesheet">
+<link href="{{.BaseURL}}assets/css/report_css/font-awesome.css" rel="stylesheet">
+<link rel="stylesheet" href="{{.BaseURL}}assets/css/report_css/bootstrap.css">
+<link rel="stylesheet" href="{{.BaseURL}}assets/css/report_css/style.css">
+<link rel="stylesheet" href="{{.BaseURL}}assets/css/report_css/jquery.css">
+<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+<script>
+function printPage() {
+    window.print();
+}
+$( document ).ready(function() {
+   setup();
+});
+function setup(){
+    var displayResources = $('#content');
+    var headtable = $('#head');
+    var outputhead ="";
+    var type = {{.Type_data}} ;
+    var output = "";
+    // alert(type)
+    var links = "{{.BaseURL}}getJSON/reportpurchasingdistributor/"+ type
+    if (type == "year") {
+        $.ajax({
+            type: "GET",
+            url: links,
+            success: function(result)
+            {
+                outputhead ="<tr><td>Tahun Pembelian</td><td>Jumla Transaksi</td><td>Jumlah Pembelian</td><td>Jumlah Pembayaran</td></tr>"
+                if(result!=null){
+                    for(var i = 0; i < result.length;i++){
+                        output+="<tr><td>"+result[i][0]+"</td><td>"+result[i][1]+"</td><td>"+result[i][2]+"</td><td>"+result[i][3]+"</td></tr>";
+                    }
+                    headtable.html(outputhead)
+                    displayResources.html(output);
+                    displayResources = $('#grand-total-invoice');
+                    output = "<p><b>Total Pembelian : </b>"+result[result.length-1][4]+"</p>"
+                    displayResources.html(output);
+                    displayResources = $('#grand-total-payment');
+                    output = "<p><b>Total Pembayaran : </b>"+result[result.length-1][5]+"</p>"
+                    displayResources.html(output);
+                }else{
+                    alert("tanggal awal tidak oleh lebih besar dari tanggal akhir")
+                }
+            }
+        });
+    }else{
+        $.ajax({
+            type: "GET",
+            url: links,
+            success: function(result)
+            {
+                outputhead ="<tr><td>Tanggal Pembelian</td><td>Nama Proyek</td><td>Deskripsi Pemesanan</td><td>Jumlah Pembelian</td></tr>"
+                if(result!=null){
+                    for(var i = 0; i < result.length;i++){
+                        output+="<tr><td>"+result[i][0]+"</td><td>"+result[i][1]+"</td><td>"+result[i][2]+"</td><td>"+result[i][3]+"</td></tr>";
+                    }
+                    headtable.html(outputhead)
+                    displayResources.html(output);
+                    displayResources = $('#grand-total-invoice');
+                    output = "<p><b>Total Pembelian : </b>"+result[result.length-1][4]+"</p>"
+                    displayResources.html(output);
+                }
+            }
+        });
+    }
+    
+}
+</script>
+<style>
+    #section-to-print
+    {
+        margin:auto;
+    }
+
+    #logo
+    {
+        max-width:50%;
+        margin:auto;
+        text-align:center;
+    }
+    
+    #button-print{
+        max-width:50%;
+        margin:auto;
+        text-align:center;
+    }
+    #btn-print{
+        max-width:50%;
+        margin:auto;
+        text-align:center;
+    }
+    #grand-total-payment{
+        
+        max-width:50%;
+        margin:auto;
+        text-align:right;
+    }
+    #grand-total-invoice{
+        
+        max-width:50%;
+        margin:auto;
+        text-align:right;
+    }
+    #company-name{
+        
+        max-width:50%;
+        margin:auto;
+        text-align:left;
+    }
+    .table{
+        max-width:50%;
+        margin:auto;
+    }
+    
+    @media print {
+      #btn-print{
+        visibility: hidden;
+      }
+      
+    }
+</style>
+    <br>
+    <div id="logo">
+<img src="{{.BaseURL}}assets/logo.svg"><br><br><br></div>
+<div id="company-name">Laporan Pembelian <b>{{.Nama_perusahaan}}</b><br><br></div>
+<table class="table" style="border-bottom: 1px solid #cdd0d4;">
+    <thead id="head">
+    
+    <!-- <div id="content"></div> -->
+    </thead>
+    <tbody id="content"></tbody>
+</table>
+<br>
+<div id="grand-total-invoice"><!-- Jumlah Pembelian: {{.Total_order}} --></div>
+<div id="grand-total-payment"><!-- Jumlah Pembayaran: {{.Total_paymen}} --></div>
+<br><br>
+<div id="button-print">
+<button id="btn-print" onclick="printPage()">Cetak</button>
+</div>
+</table>
+{{end}}

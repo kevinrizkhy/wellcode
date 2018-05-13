@@ -1,0 +1,292 @@
+{{define "notification"}}
+<style>
+.example-modal .modal {
+	position: relative;
+	top: auto;
+	bottom: auto;
+	right: auto;
+	left: auto;
+	display: block;
+	z-index: 1;
+}
+
+.example-modal .modal {
+	background: transparent !important;
+}
+
+.modal-backdrop fade in{
+	z-index: 1 !important;
+}
+
+</style>
+<script>
+	function scrollModal(e){
+		var modal = document.getElementById("modalbody");
+		var a = modal.scrollTop;
+		var modalHeight =modal.scrollHeight;
+		var clientHeight = modal.clientHeight;
+		var b = modalHeight-clientHeight;
+		var rate = a/b;
+		if (rate>=1){
+			//addNotification();
+		}
+	}
+	setInterval(notification, 10000);
+	var count = 0;
+	var lazyLoadIndex = 1;
+	var open = 0;
+	window.onload = notification();
+	function notification(){
+		$.ajax({
+			type: "GET",
+			url: "{{.BaseURL}}getJSON/notification/"+count,
+			success: function(result)
+			{
+				var newList= "<ul class='menu'>";
+				var list = document.getElementById("limenu");
+				if (result != null){
+					
+					open=1;
+					var counter = document.getElementById("counter");
+					var notif_count = document.getElementById("notif_count");
+					count = result.length;
+					notifUnRead = 0;
+										
+					for(var i=0;i<count;i++){
+						if(result[i][6]=="false"){
+							notifUnRead++;
+						}
+						var image_file = ""
+						var actor = ""
+						if(result[i][0]=="System"){
+							image_file = "{{.BaseURL}}assets/img/thumbnail-sip.jpg"
+							actor = "Sinar Inti Panel"
+						}else{
+							//image_file = "{{.BaseURL}}assets/img/thumbnail-user.jpg"
+							//actor = result[i][1]
+							if(result[i][7]==""){
+								image_file = "{{.BaseURL}}assets/img/thumbnail-user.jpg"
+							}else{
+								image_file = "{{.BaseURL}}assets/profile_picture/thumbnail_"+result[i][7]
+							}							
+							actor = result[i][0]
+						}
+						
+						var notification_item = '<li id="'+result[i][5]+'"><a href="'+result[i][3]+'">\
+							<div class="pull-left">\
+								<img src="'+image_file+'" class="img-circle" alt="User Image" />\
+							</div>\
+							<h4>\
+								 '+actor+'\
+								<small>\
+									<i class="fa fa-clock-o"></i>\
+									'+result[i][4]+'\
+								</small>\
+							</h4>\
+							<p>'+result[i][2]+'</p>\
+						</a></li>'
+						
+						newList += notification_item;
+					}
+					
+					if(notifUnRead>0){
+						counter.style.display ="block";
+						counter.innerHTML = "<span class='label label-warning' id='counter' style=\"font-size: 7px;\">"+notifUnRead+"</span>";
+						notif_count.innerHTML = "Anda memiliki "+notifUnRead+" pemberitahuan.";
+					}else{
+						counter.style.display ="none";
+						notif_count.innerHTML = "Tidak ada pemberitahuan baru.";
+					}
+				}
+				newList+="</ul>"
+				list.innerHTML=newList;
+			}
+		});
+	}
+
+	function hide(id){
+		konten = document.getElementById("konten"+id).innerHTML;
+		document.getElementById("konten").innerHTML = konten;
+		document.getElementById("idkonten").innerHTML = id;
+		document.getElementById("hiddenNotif").click();
+	}
+
+	function update(){
+		id = document.getElementById("idkonten").innerHTML;
+		document.getElementById(id).style.display="none";
+		count--;
+		var counter = document.getElementById("counter");
+		var notif_count = document.getElementById("notif_count");
+		counter.innerHTML = "<span class='label label-warning' id='counter' style=\"font-size: 7px;\">"+count+"</span>";
+		if (count>0){
+			notif_count.innerHTML = "Anda memiliki "+count+" notifikasi.";
+		}else{
+			notif_count.innerHTML = "Tidak ada pemberitahuan baru.";
+		}
+		$.ajax({
+			type: "GET",
+			url: "{{.BaseURL}}getJSON/notification-update/"+id,
+			success: function(result)
+			{
+				if(result==null){
+					alert("Tidak ada koneksi Internet...");
+				}
+			}
+		});
+		document.getElementById("cancelButton").click();
+	}
+
+	function viewAll(){
+		$.ajax({
+			type: "GET",
+			url: "{{.BaseURL}}getJSON/notification/all-"+lazyLoadIndex,
+			success: function(result)
+			{
+				if(result!="Empty"){
+					var rawheight = $(window).height();
+					var height = rawheight*70/100;
+					document.getElementById("modalbody").style.height = height+"px";
+					var list = document.getElementById("kontenViewAll");
+					var newList= "";
+					for(var i=0;i<result.length;i++){
+						newList+="<li id='"+result[i][5]+"' style='border-bottom:1px solid #d2bbbb;padding:10px 0 0 0;'><a href='"+result[i][3]+"' style='border-bottom:0px;'><table style='width:100%;'>";
+						if(result[i][0]=="System"){
+							newList+="<tr><td style='width:20px;'><i class='fa fa-cogs text-black'></i></td>";
+						}else{
+							newList+="<tr><td style='width:20px;'><i class='fa fa-info text-yellow'></i></td>";
+						}
+						newList+="<td>"+result[i][2]+"</td></tr></a></table><div style='display:inline-block; width:100%;'><div style='font-size: 10px;padding: 10px; float: right; color:gray;'><i class='far fa-clock-o'></i>&nbsp&nbsp"+result[i][4]+"</div>";
+						newList+="</div></li>";
+					}
+					list.innerHTML=newList;
+					document.getElementById("viewAllNotif").click();
+				}else{
+					var rawheight = $(window).height();
+					var height = rawheight*8/100;
+					document.getElementById("modalbody").style.height = height+"px";
+					var list = document.getElementById("kontenViewAll");
+					var newList= "<div style='text-align:center;vertical-align: middle;padding-left:-40px;'>Tidak ada pemberitahuan baru.</div>";
+					list.innerHTML=newList;
+					document.getElementById("viewAllNotif").click();
+				}
+			}
+		});
+	}
+
+	var lock = 0;
+
+	function addNotification(){
+		$.ajax({
+			type: "GET",
+			url: "{{.BaseURL}}getJSON/notification/all-"+lazyLoadIndex,
+			success: function(result)
+			{
+				if(result!=null){
+					lock = 1;
+					var newList = document.getElementById("kontenViewAll").innerHTML;
+					for(var i=0;i<result.length;i++){
+						newList+="<li id='"+result[i][5]+"' style='border-bottom:1px solid #d2bbbb;padding:10px 0 0 0;'><a href='"+result[i][3]+"' style='border-bottom:0px;'><table style='width:100%;'>";
+						if(result[i][0]=="System"){
+							newList+="<tr><td style='width:20px;'><i class='fa fa-cogs text-black'></i></td>";
+						}else{
+							newList+="<tr><td style='width:20px;'><i class='fa fa-info text-yellow'></i></td>";
+						}
+						newList+="<td>"+result[i][2]+"</td></tr></a></table><div style='display:inline-block; width:100%;'><div style='font-size: 10px;padding: 10px; float: right; color:gray;'><i class='far fa-clock-o'></i>&nbsp&nbsp"+result[i][4]+"</div>";
+						newList+="</div></li>";
+					}
+					document.getElementById("kontenViewAll").innerHTML=newList;
+					lock=0;
+				}else{
+					alert("Tidak ada koneksi Internet...")
+				}
+			}
+		});
+	}
+
+	function updateAll(){
+		$.ajax({
+			type: "GET",
+			url: "{{.BaseURL}}getJSON/notification-update/all",
+			success: function(result)
+			{
+				var counter = document.getElementById("counter");
+				var notif_count = document.getElementById("notif_count");
+				counter.style.display ="none";
+				notif_count.innerHTML = "<li class='header' id='notif_count'>Tidak ada pemberitahuan baru.</li>";
+			}
+		});
+	}
+
+</script>
+
+<a href="#" id="notificationDropdown" class="dropdown-toggle" data-toggle="dropdown" onclick="updateAll()">
+	<i class="fa fa-bell"></i>
+	<span class="label label-warning" id="counter"></span>
+</a>
+<ul class="dropdown-menu" onload="notification()">
+	<li class="header" id="notif_count" ></li>
+	<li id="limenu">
+		<ul class="menu">
+			<li style="text-align: center;">
+				Tidak ada pemberitahuan baru.
+			</li>
+		</ul>
+	</li>
+	<li class="footer" style="text-align: center;">
+		<button style="width: 100%; margin-top: 0;" type="button" class="btn btn-default" onclick="viewAll()">
+			Lihat Semua
+		</button>
+	</li>
+</ul>
+
+
+<button type="button" id="hiddenNotif" style="display: none;" class="btn btn-default" data-toggle="modal" data-target="#modal-default"></button>
+<button type="button" id="viewAllNotif" style="display: none;" class="btn btn-default" data-toggle="modal" data-target="#modal-default-view-all"></button>
+
+<style type="text/css">
+.modal-backdrop.in {
+	opacity: 0 !important;
+	z-index: 1 !important;
+}
+</style>
+
+<div class="modal fade" id="modal-default">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"/>
+				<span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">Sembunyikan Notifikasi</h4>
+			</div>
+			<div class="modal-body">
+				<p id="konten"></p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" id="cancelButton" class="btn btn-default pull-left" data-dismiss="modal" style="margin-top: 0;">Batal</button>
+				<p style="display: none;" id="idkonten"></p>
+				<button type="button" class="btn btn-primary" onclick="update()" style="margin-top: 0;">Sembunyikan</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="modal-default-view-all">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"/>
+				<span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">Semua Notifikasi</h4>
+			</div>
+			<div class="modal-body" style="overflow: auto;" id="modalbody" onscroll="scrollModal(this)">
+				<ul class='menu' style='list-style-type:none;'>
+					<div id="kontenViewAll"></div>
+				</ul>
+			</div>
+			<div class="modal-footer" style="text-align: center;">
+				<button type="button" id="cancelButton" class="btn btn-primary" data-dismiss="modal" style="margin-top: 0;">Kembali</button>
+			</div>
+		</div>
+	</div>
+</div>
+{{end}}

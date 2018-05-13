@@ -1,0 +1,132 @@
+{{define "content"}}
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="UTF-8">
+    <title>Masuk / Buat Akun</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+    <link rel="stylesheet" href="{{.BaseURL}}assets/css/bower_components/select2/dist/css/select2.min.css">
+    <link rel="stylesheet" href="{{.BaseURL}}assets/css/style-login.css">
+    <script src="{{.BaseURL}}assets/js/login.js"></script>
+    <script src="{{.BaseURL}}assets/js/validateSign.js"></script>
+    <script>
+    function clickbutton(){
+    document.getElementById("defaultopen").click();
+    }
+    
+    </script>
+    <style>
+    option[title]:hover:after{
+    content: attr(title);
+    color: red;
+    background-color: red;
+    background: red;
+    }
+    .select2-container--default .select2-results__option[aria-disabled=true]{
+    color: red;
+    }
+    .select2-container--default .select2-results__option[aria-selected=true]{
+    background-color: #ddf5fd;
+    color: black;
+    }
+    a {
+    color: #900;
+    text-decoration: none;
+    }
+    a:hover {
+    color: red;
+    position: relative;
+    }
+    a[title]:hover:after {
+    content: attr(title);
+    padding: 4px 8px;
+    color: red;
+    position: absolute;
+    left: 0;
+    top: 100%;
+    white-space: nowrap;
+    z-index: 20px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    -moz-box-shadow: 0px 0px 4px #222;
+    -webkit-box-shadow: 0px 0px 4px #222;
+    box-shadow: 0px 0px 4px #222;
+    background-image: -moz-linear-gradient(top, #eeeeee, #cccccc);
+    background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #eeeeee),color-stop(1, #cccccc));
+    background-image: -webkit-linear-gradient(top, #eeeeee, #cccccc);
+    background-image: -moz-linear-gradient(top, #eeeeee, #cccccc);
+    background-image: -ms-linear-gradient(top, #eeeeee, #cccccc);
+    background-image: -o-linear-gradient(top, #eeeeee, #cccccc);
+    }
+    input[type="checkbox"]{
+    height: auto;
+    }
+    </style>
+  </head>
+  <body onload="clickbutton()">
+    <div id="wrapper" class="container">
+      <div style="margin: 0 auto;">
+        {{if ne .Title "Sign"}}
+        <button class="tablink" onclick="openTab('Masuk', this, '#3c8dbc')" id="defaultopen">Daftar</button>
+        <button class="tablink" onclick="openTab('Daftar', this, '#3c8dbc')">Masuk</button>
+        {{else}}
+        <button class="tablink" onclick="openTab('Masuk', this, '#3c8dbc')" >Daftar</button>
+        <button class="tablink" onclick="openTab('Daftar', this, '#3c8dbc')">Masuk</button>
+        {{end}}
+        <div id="Daftar" class="tabcontent">
+          <h1 style="padding-top: 50px;">Sign Up </h1>
+          <div id="wrapper" class="container" style="padding-top: 0;">
+            <div id="Daftar" class="tabcontent">
+            </div>
+          </div>
+        </div>
+        <div id="Masuk" class="tabcontent">
+          <h1 style="padding-top: 50px;">Sign In</h1>
+          <div id="wrapper" class="container">
+            <form id="form-work" class="" name="form-work" action="/" method="POST" onsubmit="return validateLogin()" >
+              <div class="form-group">
+                <div class="col-md-4 col-md-offset-4">
+                  <label class="control-label" for="email">Email</label>
+                  <input name="email" class="form-control" placeholder="email@provider.domain" type="email" required>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-md-4 col-md-offset-4">
+                  <label class="control-label" for="password">Kata Sandi&nbsp&nbsp&nbsp<i id="passLoginErr" title="Password Anda kurang dari 6 digit." class="fa fa-times-circle" style="visibility:hidden;color:red;"></i></label>
+                  <input name="password" id="password" class="form-control" placeholder="password" type="password" required>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-md-4 col-md-offset-4" style="text-align: center">
+                  <input type="checkbox" name="rememberme" value="1" id="rememberme">
+                  <label class="form-check-label" for="rememberme"> Ingat Saya</label>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-md-4 col-md-offset-4">
+                  <button class="btn btn-primary btn-lg btn-block info">Masuk</button>
+                  <div style="text-align: right;">
+                    <br><a href="/">Lupa Kata Sandi?</a>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- jQuery 3 -->
+    <script src="{{.BaseURL}}/assets/css/bower_components/jquery/dist/jquery.min.js"></script>
+    <!-- Select2 -->
+    <script src="{{.BaseURL}}/assets/css/bower_components/select2/dist/js/select2.full.min.js"></script>
+    <script>
+    $(function () {
+    //Initialize Select2 Elements
+    $('.select2').select2()
+    })
+    </script>
+  </body>
+</html>
+{{end}}

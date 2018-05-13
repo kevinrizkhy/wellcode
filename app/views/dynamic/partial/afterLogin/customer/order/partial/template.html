@@ -1,0 +1,170 @@
+{{define "content"}}
+<link rel="stylesheet" href="{{.BaseURL}}assets/css/william.css">
+<style>
+#myBtn,#myBtnD {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 30px;
+  z-index: 99;
+  border: none;
+  outline: none;
+  background-color: #3c8dbc;
+  color: white;
+  cursor: pointer;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+#myBtn:hover,#myBtnD:hover {
+  background-color: #25ACCE;;
+}
+</style>
+<script type="text/javascript">
+    $( document ).ready(function() {
+      setup()
+    });
+    function setup() {
+        $.ajax({
+            type: "GET",
+            url: "{{.BaseURL}}getJSON/purchasingdetail/{{.IDO}}",
+            success: function(result)
+            {
+                if(result==null){
+                    window.location.replace("{{.BaseURL}}/order");
+                }
+                var res = "";
+                for (var i=0;i<result.length;i++){
+                    res += result[i][0];
+                }
+                $('#MainContent').html(res);
+            }
+        });
+        $.ajax({
+            type: "GET",
+            url: "{{.BaseURL}}getJSON/statusbar/{{.IDO}}",
+            success: function(result)
+            {
+                var spesifikasi = 0;
+                var perancangan = 0;
+                var tagihan = 0;
+                var pembayaran = 0;
+                var lunas = 0;
+                var selesai = 0;
+                var total = 0;
+                for (var i = 0; i<result.length; i++) {
+                    if ((result[i][0]=="order")&&(spesifikasi==0)){
+                        spesifikasi=1;
+                        total++;
+                        document.getElementById("spesifikasi").classList.add("active");
+                    }else if ((result[i][0]=="offer")&&(perancangan==0)){
+                        perancangan = 1;
+                        total++;
+                        document.getElementById("perancangan").classList.add("active");
+                    }else if((result[i][0]=="confirm")&&(tagihan==0)){
+                        tagihan = 1;
+                        document.getElementById("tagihan").classList.add("active");
+                        if (perancangan==0){
+                            perancangan = 1;
+                            total++;
+                            document.getElementById("perancangan").classList.add("active");
+                        }
+                    }else if((result[i][0]=="pembayaran")&&(pembayaran==0)){
+                        pembayaran = 1;
+                        total++;
+                        document.getElementById("pembayaran").classList.add("active");
+                    }else if((result[i][0]=="lunas")&&(lunas==0)){
+                        lunas = 1;
+                        total++;
+                        document.getElementById("lunas").classList.add("active");
+                    }
+                    else if((result[i][0]=="end")&&(selesai==0)){
+                        selesai = 1;
+                        total++;
+                        document.getElementById("selesai").classList.add("active");
+                        document.getElementById("statusbar").classList.add("complete");
+                    }
+                }
+                if(spesifikasi==0){
+                    document.getElementById("spesifikasi").classList.add("inactive");
+                }
+                if(perancangan==0){
+                    document.getElementById("perancangan").classList.add("inactive");
+                }
+                if(tagihan==0){
+                    document.getElementById("tagihan").classList.add("inactive");
+                }
+                if(pembayaran==0){
+                    document.getElementById("pembayaran").classList.add("inactive");
+                }
+                if(lunas==0){
+                    document.getElementById("lunas").classList.add("inactive");
+                }
+                if(selesai==0){
+                    document.getElementById("selesai").classList.add("inactive");
+                }
+                if(total==0){
+                    document.getElementById("statusbar").classList.add("begin");
+                }else{
+                    if (selesai==0){
+                        document.getElementById("statusbar").classList.add("ongoing");
+                    }
+                }
+                window.scrollTo(0, document.body.scrollHeight);
+            }
+        });
+
+        // var objDiv = document.getElementById("bottompage");
+        // objDiv.scrollDown = objDiv.scrollHeight;
+
+        // var element = document.getElementById("bottompage");
+        // $('#bottompage').scrollTo(element.get(0).scrollHeight);
+    }
+    function topFunction() {
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+    }
+    function downFunction() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            document.getElementById("myBtn").style.display = "block";
+            document.getElementById("myBtnD").style.display = "none";
+        } else {
+            document.getElementById("myBtn").style.display = "none";
+            document.getElementById("myBtnD").style.display = "block";
+        }
+    }
+</script>
+
+<div class="statusbar" id="statusbar">
+    <div class="step begin" id="spesifikasi">Spesifikasi Diajukan</div>
+    <div class="step ongoing" id="perancangan">Proses Perancangan</div>
+    <div class="step payment" id="tagihan">Menunggu Tagihan</div>
+    <div class="step payment" id="pembayaran">Menunggu Pembayaran</div>
+    <div class="step finish" id="lunas">Pembayaran Dilunasi</div>
+    <div class="step finish" id="selesai">Pembelian Selesai</div>
+</div>
+<div class="statusbar shadow">
+    <div class="step begin" id="spesifikasi">Spesifikasi Diajukan</div>
+    <div class="step ongoing" id="perancangan">Proses Perancangan</div>
+    <div class="step payment" id="tagihan">Menunggu Tagihan</div>
+    <div class="step payment" id="pembayaran">Menunggu Pembayaran</div>
+    <div class="step finish" id="lunas">Pembayaran Dilunasi</div>
+    <div class="step finish" id="selesai">Pembelian Selesai</div>
+</div>
+<div id="JumbotronContent" >
+    <div id="wrapper" style="margin: 0 auto;">
+        <div id="MainContent">
+        </div>
+    </div>
+</div>
+<div id="bottompage"><a id="#bottompage" name="bottompage" href="#bottompage"></a></div>
+<button onclick="topFunction()" id="myBtn" title="Go to top"><i class="fa fa-caret-square-o-up" style="width:100%"aria-hidden="true"></i></button>
+<button onclick="downFunction()" id="myBtnD" title="Go to top"><i class="fa fa-caret-square-o-down" style="width:100%"aria-hidden="true"></i>
+</button>
+
+{{end}}

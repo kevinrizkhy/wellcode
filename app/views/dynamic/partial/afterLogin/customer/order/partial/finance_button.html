@@ -1,0 +1,14 @@
+<div class='buttons'>
+	<button class='button button-ok' id='approve' type='submit'>
+		Terima
+	</button>
+	<button class='button button-reject' id='reject1' onclick='return openBoxNoteReject()' type='button'>
+		Tolak
+	</button>
+</div>
+<script type="text/javascript">
+          function openBoxNoteReject(){
+            document.getElementById("form-reject").style.display="block";
+            return false;
+          }
+</script>

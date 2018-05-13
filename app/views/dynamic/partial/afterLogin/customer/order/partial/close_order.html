@@ -1,0 +1,16 @@
+<form  enctype="multipart/form-data" id="form-work" class="timeline-block" name="form-work" action="/order" method="POST">
+      <div class="timestamp"><i class="fa fa-clock-o" aria-hidden="true"></i>10 Januari 2018</div>
+      <div class="fancy-header {{.Status_box}}">
+        <i class="fa fa-money" aria-hidden="true"></i><br>
+        Klaim Pembayaran - {{.Invoice_number}}<br>
+        {{.Status}}
+      </div>
+      <div class="form-group row">
+        <input name="orderId" id="invoiceID" type="text" style="border: 0 !important; display: none;" required value="{{.Order_id}}" />
+        <!-- SPLIT BUTTON FOR DISTRIBUTO -->
+        <div class="buttons">
+          <button class="button button-ok" type="submit">Tutup Pembelian</button><!-- <button class="button button-reject" type="submit">Tolak</button> -->
+        </div>
+        <!-- SPLIT BUTTON FOR DISTRIBUTO -->
+      </div>
+    </form>

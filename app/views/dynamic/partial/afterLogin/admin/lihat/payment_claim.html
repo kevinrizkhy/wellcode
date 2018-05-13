@@ -1,0 +1,162 @@
+{{define "content"}}
+<script type="text/javascript">
+  function getDataInvoice(){
+    var id = document.getElementById("orderName").value;
+    var displayResources = $('#filenamediv');
+    $.ajax({
+      type: "GET",
+      url: "{{.BaseURL}}getJSON/listorderdistributor/"+id,
+      success: function(result)
+      {
+        if(result!=null){
+          var output = '<a href="/upload/invoice/'+result[0][0]+'" target="_blank">Unduh File Tagihan</a>';
+          
+          displayResources.html(output);
+        }else{
+          var output = "<p>File tagihan tidak ditemukan</p>";
+          displayResources.html(output);
+        }
+
+        if (id == "-1") {
+          document.getElementById("invoiceID").setAttribute('value','');
+          var output = "<p></p>";
+          displayResources.html(output);
+        }else{
+          document.getElementById("invoiceID").setAttribute('value',id);;
+        }
+      }
+    });      
+  }
+
+  function getDataOrder(){
+    var id = document.getElementById("companyName").value;
+    var displayResources = $('#orderlistdiv');
+    $.ajax({
+      type: "GET",
+      url: "{{.BaseURL}}getJSON/listorder/"+id,
+      success: function(result)
+      {
+        if(result!=null){
+          var output = '<select name="order_name" id="orderName" onchange="getDataInvoice()" class="form-control">';
+          output += "<option value='-1'>Pilih Order</option>";
+          for (var i = 0; i < result.length; i++) {
+            output +='<option value="'+result[i][0]+'">'+result[i][1]+'</option>';
+          } 
+          output += "</select>"      
+          displayResources.html(output);
+        }else{
+          var output = "<p>tidak ada order yang belum lunas untuk perusahaan ini</p>";
+          displayResources.html(output);
+        }
+        if (id == "-1") {
+          document.getElementById("customerID").setAttribute('value','');
+          var output = "<p></p>";
+          displayResources.html(output);
+          displayResources = $('#filenamediv');
+          displayResources.html(output);
+        }else{
+          document.getElementById("customerID").setAttribute('value',id);
+        }
+        
+      }
+    });
+  }
+</script>
+<h1 style="padding: 20px; text-align: center;">Klaim Pembayaran</h1>
+<div id="wrapper" class="container">
+  <div class="form-group">
+    <div class="col-md-12" style="padding-bottom: 20px;">
+      <label for="order_name">Nama Perusahaan</label>
+      <select name="company_name" id="companyName" onchange="getDataOrder()" class="form-control">
+        <option value="-1">Pilih Perusahaan</option>
+        {{ range $i := .Company_Name}}
+        <option value="{{index $i 0}}">{{index $i 1}}</option>
+        {{end}}
+      </select>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="col-md-12" style="padding-bottom: 20px;">
+      <label for="order_name">Nama Order</label>
+      <div id="orderlistdiv">
+        
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="col-md-12" style="padding-bottom: 20px;">
+      <label>Berkas Tagihan</label>
+      <div class="input-group" id="filenamediv"></div>
+    </div>
+  </div>
+  <br><br>
+  <form  enctype="multipart/form-data" id="form-work" class="" name="form-work" action="/paymentclaimdistributordata" method="POST">
+    <div style="margin: 0 auto;">
+      <div class="form-group">
+        <div class="col-md-4" style="padding-bottom: 20px;">
+          <label>Unggah Berkas Bukti Pembayaran</label>
+          <div class="input-group">
+            <input name="payment_file" class="form-control" placeholder="Unggah File Bukti Pembayaran" type="file" style="border: 0 !important;" required>
+          </div>
+          <input name="invoiceId" id="invoiceID" type="text" style="border: 0 !important; display: none;" required value="" />
+          <input name="customerId" id="customerID" type="text" style="border: 0 !important; display: none;" required value="" />
+          <input name="csrf"  type="text" style="border: 0 !important; display: none;" required value="{{.CSRF}}" />
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-md-12" style="padding-bottom: 20px;">
+        <label for="method">Metode Pembayaran</label>
+        <select name="method" class="form-control">
+          <option value="transfer">Transfer</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-md-12" style="padding-bottom: 20px;">
+        <label for="bank_account_name">Nama Bank</label>
+        <input name="bank_account_name" class="form-control" placeholder="nama bank" type="text" style="border: 0 !important;" required>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-md-12" style="padding-bottom: 20px;">
+        <label for="bank_account_number">Nomor Rekening</label>
+        <input name="bank_account_number" class="form-control" placeholder="nomor rekening" type="text" style="border: 0 !important;" required>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-md-12" style="padding-bottom: 20px;">
+        <label for="bank_account_id">Atas Nama</label>
+        <input name="bank_account_id" class="form-control" placeholder="atas nama" type="text" style="border: 0 !important;" required>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-md-12" style="padding-bottom: 20px;">
+        <label for="date_payment">Tanggal Pembayaran</label>
+        <input name="date_payment" class="form-control" placeholder="atas nama" type="date" style="border: 0 !important;" required>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-md-12" style="padding-bottom: 20px;">
+        <label for="pay">Nominal Pembayaran</label>
+        <div class="input-group">
+          <span class="input-group-addon">Rp.</span>
+          <input name="pay" class="form-control" placeholder="nominal pembayaran" type="number" style="border: 0 !important;" required>
+        </div>
+        
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-md-12" style="padding-bottom: 20px;">
+        <label for="note">Catatan Pembayaran</label>
+        <textarea name="note" rows="10" style="width: 100%; resize: none;" placeholder="Silahkan memberikan catatan pada bagian ini." value=""></textarea>
+      </div>
+    </div>
+    <div class="form-group" style="margin-bottom: 20px;">
+      <div class="col-md-4 col-md-offset-4">
+        <button class="btn btn-primary btn-lg btn-block info">Klaim Pembayaran</button>
+      </div>
+    </div>
+  </form>
+</div>
+{{end}}

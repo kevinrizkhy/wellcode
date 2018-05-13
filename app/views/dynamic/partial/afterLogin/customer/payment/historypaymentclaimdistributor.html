@@ -1,0 +1,149 @@
+{{define "content"}}
+<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+<link rel="stylesheet" href="{{.BaseURL}}assets/css/style-login.css">
+<link rel='stylesheet prefetch' href='https://fonts.googleapis.com/icon?family=Material+Icons'>
+<link rel="stylesheet" href="{{.BaseURL}}assets/css/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+<script src="{{.BaseURL}}assets/css/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="{{.BaseURL}}assets/css/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<style type="text/css" media="print">
+@page {
+  size: auto;   /* auto is the initial value */
+  margin: 0;  /* this affects the margin in the printer settings */
+}
+</style>
+<script type="text/javascript">
+  $( document ).ready(function() {
+    setup();
+  });
+  function setup(){
+    var displayResources = $('#display-resources');
+    $.ajax({
+      type: "GET",
+      url: "{{.BaseURL}}getJSON/historypayment/all-all",
+      success: function(result)
+      {
+        $('#example1').DataTable({
+          data: result,
+          destroy: true,
+          responsive: true,
+          columns:[{title:"Tanggal Klaim"},{title:"Nama Proyek"},{title:"Nomor Pembayaran"},{title:"Nomor Tagihan"},{title:"Terbayar"},{title:"Status"},{title:""}]
+        });
+      }
+    });
+  }    
+
+  function getData() {
+    var idInvoice = document.getElementById("invoice").value;
+    var idStatus = document.getElementById("status").value;
+    if (idStatus != "-") {
+      var link = "{{.BaseURL}}getJSON/historypayment/"+idInvoice+"-"+idStatus
+      var displayResources = $('#display-resources');
+      if (idInvoice == "all") {
+        if (idStatus == "all"){
+          $('#example1').DataTable().destroy();
+          $('#example1').empty();
+          $.ajax({
+            type: "GET",
+            url: link,
+            success: function(result)
+            {
+              $('#example1').DataTable({
+                data: result,
+                responsive: true,
+                columns:[{title:"Tanggal Klaim"},{title:"Nama Proyek"},{title:"Nomor Pembayaran"},{title:"Nomor Tagihan"},{title:"Terbayar"},{title:"Status"},{title:""}]
+              });
+            }
+          });
+        }else{
+          $('#example1').DataTable().destroy();
+          $('#example1').empty();
+          $.ajax({
+            type: "GET",
+            url: link,
+            success: function(result)
+            {
+              $('#example1').DataTable({
+                data: result,
+                responsive: true,
+                columns:[{title:"Tanggal Klaim"},{title:"Nama Proyek"},{title:"Nomor Pembayaran"},{title:"Nomor Tagihan"},{title:"Terbayar"},{title:""}]
+              });
+            }
+          });
+        }
+      }else{
+        if (idStatus == "all") {
+          $('#example1').DataTable().destroy();
+          $('#example1').empty();
+          $.ajax({
+            type: "GET",
+            url: link,
+            success: function(result)
+            {
+              $('#example1').DataTable({
+                data: result,
+                responsive: true,
+                columns:[{title:"Tanggal Klaim"},{title:"Nomor Pembayaran"},{title:"Nomor Tagihan"},{title:"Terbayar"},{title:"Status"},{title:""}]
+              });
+            }
+          });  
+        }else{
+          $('#example1').DataTable().destroy();
+          $('#example1').empty();
+          $.ajax({
+            type: "GET",
+            url: link,
+            success: function(result)
+            {
+              $('#example1').DataTable({
+                data: result,
+                responsive: true,
+                columns:[{title:"Tanggal Klaim"},{title:"Nomor Pembayaran"},{title:"Nomor Tagihan"},{title:"Terbayar"},{title:""}]
+              });
+            }
+          });
+        }
+      }
+      
+    }
+  }
+</script>
+<div id="wrapper" class="container" style="padding-top: 0;">
+  <div style="margin: 0 auto;">
+    <div class="col-md-12"  style="padding: 25px 0 0 0;">
+      <b><h3 class="profile-username text-center" style="font-size: 25px">Daftar Pembayaran</h3></b>
+    </div>
+    <div class="form-group">
+      <div class="row">
+        <div class="col-md-offset-2 col-md-8">
+          <label class="control-label label-filter" for="district"><span style="color: red;">*</span>Pilih Tagihan</label>
+          <select id="invoice" name="invoice" class="form-control select2" onchange="getData()" style="width: 100%;">
+            <option value="all" selected>Semua Tagihan</option>
+            {{ range $i := .Invoice }}
+            <option value="{{index $i 0}}" >{{index $i 1}}</option>
+            {{ end }}
+          </select>
+          <select id="status" name="status" class="form-control select2" onchange="getData()" style="width: 100%;">
+            <option value="-" selected>Pilih Status Klaim Pembayaran</option>
+            <option value="all" >Semua</option>
+            <option value="checking" >Menunggu Konfirmasi</option>
+            <option value="valid" >Pembayaran Disetujui</option>
+            <option value="!valid" >Pembayaran Ditolak</option>
+            <option value="cancel" >Pembayaran Dibatalkan</option>
+          </select>
+        </div>
+      </div>
+      <br>
+      <div class="col-md-offset-8 col-md-4"  style="padding: 25px 0 0 0;">
+      </div>
+      <div class="col-xs-12" style="display: block; width: 100%;" id="list">
+        <div class="box">
+          <div class="box-body">
+            <table id="example1" class="hover table table-bordered table-striped" width="100%">
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{{end}}

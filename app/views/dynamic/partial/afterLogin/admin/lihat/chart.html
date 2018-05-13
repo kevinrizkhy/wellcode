@@ -1,0 +1,80 @@
+{{define "content"}}
+<link rel="stylesheet" href="{{.BaseURL}}assets/css/style-login.css">
+<link rel="stylesheet" href="{{.BaseURL}}assets/css/bower_components/bootstrap/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="{{.BaseURL}}assets/css/bower_components/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="{{.BaseURL}}assets/css/bower_components/Ionicons/css/ionicons.min.css">
+<link rel="stylesheet" href="{{.BaseURL}}assets/css/bower_components/morris.js/morris.css">
+<link rel="stylesheet" href="{{.BaseURL}}assets/dist/css/AdminLTE.min.css">
+<link rel="stylesheet" href="{{.BaseURL}}assets/css/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+
+<script src="{{.BaseURL}}assets/css/bower_components/raphael/raphael.min.js"></script>
+<script src="{{.BaseURL}}assets/css/bower_components/morris.js/morris.min.js"></script>
+<script src="{{.BaseURL}}assets/css/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="{{.BaseURL}}assets/css/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script type="text/javascript">
+  $( document ).ready(function() {
+    setup();
+  });
+  function setup() {
+    "use strict";
+    var datas = [];
+    var dataTable = "<thead><tr><th>Status</th> <th>Total</th> </tr> </thead><tbody>";
+    $.ajax({
+      type: "GET",
+      url: "{{.BaseURL}}getJSON/report/bounce",
+      success: function(result)
+      {
+        for(var i = 0 ; i < result.length;i++){
+          var values = parseInt(result[i][1]);
+          var name =""
+          if (result[i][0] == "true") {
+            name = "Bounce";
+          }else{
+            name = "Success";
+          }
+
+          var dict = {};
+          dict["label"]= name;
+          dict["value"]=values;
+          datas.push(dict);     
+        }
+
+        var donut = new Morris.Donut({
+          element: 'sales-chart',
+          resize: true,
+          colors: ["#3c8dbc", "#f56954", "#00a65a"],
+          data: datas,
+          hideHover: 'auto'
+        });  
+
+        $('#example1').DataTable({
+          data: result,
+          columns:[{title:"Status"},{title:"Value"}]
+        });
+      }
+    });
+  }
+</script>
+<div id="wrapper" class="container" style="padding-top: 0;">
+  <div style="margin: 0 auto; overflow: auto;">
+    <div class="col-md-12" >
+      <div class="box-header with-border">
+        <h3 class="box-title">Donut Chart</h3>
+      </div>
+      <div class="box-body chart-responsive">
+        <div class="chart" id="sales-chart" style="height: 300px; position: relative;"></div>
+      </div>
+    </div>
+    <div class="col-xs-12">
+      <div class="box">
+        <!-- /.box-header -->
+        <div class="box-body">
+          <table id="example1" class="hover table table-bordered table-striped">
+          </table>
+        </div>
+        <!-- /.box-body -->
+      </div>
+    </div>
+  </div>
+</div>
+{{end}}

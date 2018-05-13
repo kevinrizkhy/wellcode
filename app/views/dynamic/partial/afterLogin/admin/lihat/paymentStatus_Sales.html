@@ -1,0 +1,61 @@
+{{define "content"}}
+<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+<link rel="stylesheet" href="{{.BaseURL}}assets/css/style-login.css">
+
+<style type="text/css" >
+#listTab {
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+  table-layout: fixed;
+  word-wrap: break-word;
+}
+#listTab td, #listTab th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+#listTab tr:nth-child(even){background-color: #f2f2f2;}
+#listTab tr:hover {background-color: #aacbff;}
+#listTab th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  color: white;
+}
+div.sticky {
+  position: -webkit-sticky; /* Safari */
+  position: sticky;
+  top: 0;
+}
+</style>
+<div id="wrapper" class="container" style="padding-top: 0;">
+  <div style="margin: 0 auto;">
+    <div class="col-md-12"  style="padding: 25px 0 0 0;">
+      <b><h3 class="profile-username text-center" style="font-size: 25px">Status Pembayaran Distributor</h3></b>
+    </div>
+    <div class="form-group">
+      <br><br>
+      <div class="col-md-12" id="listTab" style="max-height:600px;height:400px; overflow: auto; text-align: center; ">
+        <div class="sticky">
+          <table id='listTab'>
+            <thead style="position: sticky; background-color: #357ca5; width:100%;color: white; ">
+              <th style="width:75%;">Nama Perusahaan</th>
+              <th style="width:25%;">Status</th>
+            </thead>
+            <tbody>
+              {{ range $i := .Transaction }}
+              <tr>
+                <td>{{index $i 0}}</td>
+                <td>{{index $i 1}}</td>
+              </tr>
+              {{ end }}
+            </tfoot>
+          </table>
+        </div>
+        <div id="display-resources">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{{end}}

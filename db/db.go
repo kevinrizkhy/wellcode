@@ -5,7 +5,6 @@ import (
 	"fmt"
 	database "github.com/kevinrizkhy/Internal/config"
 	_ "github.com/lib/pq"
-	//"reflect"
 )
 
 var Execute *sql.DB
